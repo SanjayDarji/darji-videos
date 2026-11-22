@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Post the next due Reel from reels/ to Instagram.
 
-Uses the Instagram API with Instagram Login (graph.instagram.com), standard library only.
+Uses Meta's Instagram API through graph.facebook.com (Facebook Login or Unified Login
+tokens), standard library only. Set GRAPH_HOST=graph.instagram.com for an old-style
+Instagram Login token.
 
 Folder layout: reels/YYYY-MM-DD_slug/video.mp4 and reels/YYYY-MM-DD_slug/caption.txt
 A reel is "due" once its date (India time) has arrived. One reel is posted per day.
 
 Environment:
-  IG_ACCESS_TOKEN  Instagram user access token (not needed for a dry run)
-  IG_USER_ID       Instagram account id (optional, defaults to "me")
+  IG_ACCESS_TOKEN  Page or system-user access token (not needed for a dry run)
+  IG_USER_ID       Instagram professional account id (not needed for a dry run)
   REEL             folder name under reels/ to post right now (optional)
   DRY_RUN          "true" checks everything but posts nothing
   REPO             owner/name, used to build the public video URL
@@ -28,7 +30,8 @@ REELS = os.path.join(ROOT, "reels")
 LOG = os.path.join(ROOT, "posted.json")
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 VERSION = os.environ.get("IG_API_VERSION", "v27.0")
-BASE = f"https://graph.instagram.com/{VERSION}"
+HOST = os.environ.get("GRAPH_HOST", "").strip() or "graph.facebook.com"
+BASE = f"https://{HOST}/{VERSION}"
 
 
 def log(msg):
@@ -162,7 +165,9 @@ def main():
     token = os.environ.get("IG_ACCESS_TOKEN", "").strip()
     if not token:
         sys.exit("IG_ACCESS_TOKEN is not set. Add it under Settings > Secrets and variables > Actions.")
-    ig = os.environ.get("IG_USER_ID", "").strip() or "me"
+    ig = os.environ.get("IG_USER_ID", "").strip()
+    if not ig:
+        sys.exit("IG_USER_ID is not set. Add the Instagram account ID as a repository secret.")
 
     container = call(
         "POST",
