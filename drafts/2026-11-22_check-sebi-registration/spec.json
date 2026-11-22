@@ -1,0 +1,146 @@
+{
+  "brand": "TheSDTrader",
+  "tagline": "शैक्षणिक जानकारी · निवेश सलाह नहीं",
+  "face": "assets/face_original.png",
+  "voice_tempo": 1.08,
+  "lead": 0.12,
+  "pad": 0.15,
+  "music_vol": 0.2,
+  "sfx_vol": 0.4,
+  "voice_vol": 1.5,
+  "day_tag": "DAY 6 · BEGINNER",
+  "cover": {
+    "pill": "TRADING EXPLAINED · DAY 6",
+    "l1": "पक्का",
+    "l2": "मुनाफ़ा?",
+    "sub": "CHECK SEBI REGISTRATION"
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "line1": "GUARANTEED PROFIT?",
+      "line2": "STOP.",
+      "size1": 70,
+      "size2": 170,
+      "subs": [
+        "*पक्का मुनाफ़ा*, गारंटीड रिटर्न?",
+        "*रुकिए*। पहले यह एक चीज़ *चेक* कीजिए।"
+      ]
+    },
+    {
+      "type": "facts",
+      "source": "स्रोत: SEBI की वेबसाइट · Business Standard",
+      "rev": [
+        0.04,
+        0.55,
+        0.85
+      ],
+      "rows": [
+        {
+          "icon": "1",
+          "t": "रजिस्ट्रेशन नंबर माँगो",
+          "s": "INA सलाहकार · INH रिसर्च एनालिस्ट"
+        },
+        {
+          "icon": "2",
+          "t": "sebi.gov.in पर खोजो",
+          "s": "Registered Intermediaries में नाम / नंबर"
+        },
+        {
+          "icon": "3",
+          "t": "नाम और वैधता मिलाओ",
+          "s": "रजिस्ट्रेशन चालू है या नहीं",
+          "hot": true
+        }
+      ],
+      "subs": [
+        "किसी भी टिप देने वाले से, उसका *SEBI रजिस्ट्रेशन नंबर* माँगिए।",
+        "सलाहकार का नंबर *INA* से शुरू होता है, और रिसर्च एनालिस्ट का, *INH* से।",
+        "फिर SEBI की वेबसाइट पर, *Registered Intermediaries* में, नाम या नंबर खोजिए।",
+        "और देखिए कि नाम और *वैधता* मेल खाती है।"
+      ]
+    },
+    {
+      "type": "facts",
+      "source": "स्रोत: SEBI निवेशक चेतावनी · Business Standard",
+      "rev": [
+        0.04,
+        0.34,
+        0.7
+      ],
+      "rows": [
+        {
+          "icon": "UPI",
+          "t": "पैसे भेजने से पहले: SEBI Check",
+          "s": "UPI ID या बैंक खाता जाँचो"
+        },
+        {
+          "icon": "!",
+          "t": "'गारंटीड रिटर्न' का वादा",
+          "s": "SEBI: पक्के रिटर्न की गारंटी नहीं",
+          "hot": true
+        },
+        {
+          "icon": "!",
+          "t": "'इनसाइड टिप' का वादा",
+          "s": "लाल झंडा: पहले रजिस्ट्रेशन जाँचो",
+          "hot": true
+        }
+      ],
+      "subs": [
+        "पैसे भेजने से पहले, *SEBI Check* से UPI या बैंक खाता जाँचिए।",
+        "SEBI कहता है, शेयर बाज़ार में, *पक्के रिटर्न की कोई गारंटी नहीं* हो सकती।",
+        "इसलिए *गारंटीड रिटर्न* या *इनसाइड टिप* का वादा, *लाल झंडा* है।"
+      ]
+    },
+    {
+      "type": "lesson",
+      "rev": [
+        0.05,
+        0.24,
+        0.58
+      ],
+      "rows": [
+        {
+          "t": "नंबर माँगो",
+          "s": "ASK FOR THE SEBI NUMBER"
+        },
+        {
+          "t": "SEBI की साइट पर जाँचो",
+          "s": "VERIFY ON SEBI'S WEBSITE"
+        },
+        {
+          "t": "पक्के मुनाफ़े के वादे से बचो",
+          "s": "NO ONE CAN GUARANTEE RETURNS"
+        }
+      ],
+      "subs": [
+        "याद रखो। *नंबर* माँगो,",
+        "SEBI की वेबसाइट पर *जाँचो*,",
+        "और पक्के मुनाफ़े के *वादे से बचो*।"
+      ]
+    },
+    {
+      "type": "outro",
+      "tag": "Trading Education · हिंदी में",
+      "cta": [
+        "SAVE",
+        "SEND",
+        "FOLLOW"
+      ],
+      "notice_hi": "हम SEBI रजिस्टर्ड नहीं हैं।",
+      "notice_en": "Educational purposes only · Not investment advice",
+      "tail": 0.8,
+      "rev": [
+        0.04,
+        0.66
+      ],
+      "subs": [
+        "काम का लगा तो *Save* करो।",
+        "किसी दोस्त को *Send* करो, जो शेयर बाज़ार सीख रहा है।",
+        "Follow करो *TheSDTrader*।",
+        "हम *SEBI रजिस्टर्ड नहीं* हैं। जानकारी सिर्फ़ *शैक्षणिक* है, निवेश सलाह नहीं।"
+      ]
+    }
+  ]
+}

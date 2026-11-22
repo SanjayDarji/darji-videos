@@ -340,7 +340,7 @@ def sc_outro(im, d, lt, dur, sc):
 
 def sc_headlines(im, d, lt, dur, sc):
     T = reveals(sc, dur)
-    for i, (txt, up) in enumerate([(sc["h1"], False), (sc["h2"], True)]):
+    for i, (txt, up) in enumerate([(sc["h1"], bool(sc.get("up_first"))), (sc["h2"], not sc.get("up_first"))]):
         e = eo(prog(lt, T[i], .5)); a = clamp(e * 2.2)
         if e <= .12: continue
         y0 = 430 + i * 215 + slide(e); y1 = y0 + 175; cy = (y0 + y1) // 2
@@ -351,7 +351,7 @@ def sc_headlines(im, d, lt, dur, sc):
         text(d, 285, cy, txt, 56, WHITE, anchor="lm", a=a)
     e = eb(prog(lt, T[2], .5))
     if e > .15:
-        d.text((CX, 970), "?", font=F(int(230 * clamp(e) * (1 + 0.05 * math.sin(lt * 5)))), fill=C(GOLD), anchor="mm")
+        d.text((CX, 970), sc.get("mark", "?"), font=F(int(230 * clamp(e) * (1 + 0.05 * math.sin(lt * 5)))), fill=C(GOLD), anchor="mm")
         text(d, CX, 1130, sc["note"], 34, MUTED, bold=False, a=clamp(e))
 
 def sc_baskets(im, d, lt, dur, sc):
