@@ -366,11 +366,11 @@ def sc_baskets(im, d, lt, dur, sc):
         y0 = 495 + i * 225 + slide(e); y1 = y0 + 200; cy = (y0 + y1) // 2
         rrect(d, [90, y0, 930, y1], 30, CARD, GOLD, 3, a)
         rrect(d, [110, cy - 60, 282, cy + 60], 22, CARD2, None, 0, a)
-        text(d, 196, cy, card["n"], 72, GOLD, a=a)
+        text(d, 196, cy, card["n"], 72 if len(card["n"]) <= 3 else 38, GOLD, a=a)
         text(d, 320, cy - 30, card["t"], 52, WHITE, anchor="lm", a=a)
         text(d, 320, cy + 36, card["s"], 30, MUTED, bold=False, anchor="lm", a=a)
     e = eo(prog(lt, T[3], .5)); a = clamp(e * 2.2)
-    if e > .12:
+    if e > .12 and "bars_t" in sc:
         text(d, CX, 965 + slide(e), sc["bars_t"], 38, WHITE, a=a)
         for k, (lab, wid) in enumerate([("बड़ी", 700), ("मध्यम", 430), ("छोटी", 240)]):
             ee = eo(prog(lt, T[3] + 0.15 * k, .5)); y = 1015 + k * 52
@@ -548,7 +548,7 @@ if __name__ == "__main__":
         cover(os.path.join(REEL, "cover.jpg"))
     elif mode == "preview":
         times = [float(x) for x in sys.argv[3].split(",")] if len(sys.argv) > 3 else \
-            [SEG[i]["t0"] + SEG[i]["dur"] * f for i, f in [(0, .5), (1, .6), (2, .2), (2, .5), (2, .95), (3, .3), (3, .95), (4, .9), (5, .4), (5, .9)]]
+            [SEG[i]["t0"] + SEG[i]["dur"] * f for i in range(len(SEG)) for f in ((.5, .95) if i < len(SEG) - 1 else (.4, .9))]
         tiles = [frame(t).resize((360, 640)) for t in times]
         sheet = Image.new("RGB", (360 * 5, 640 * ((len(tiles) + 4) // 5)))
         for k, tl in enumerate(tiles): sheet.paste(tl, ((k % 5) * 360, (k // 5) * 640))
