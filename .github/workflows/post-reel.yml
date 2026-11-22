@@ -1,0 +1,50 @@
+name: Post Reel
+
+on:
+  schedule:
+    - cron: "30 13 * * *" # 19:00 India time, every day
+  workflow_dispatch:
+    inputs:
+      reel:
+        description: "Folder under reels/ to post now (leave blank for the next due reel)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Check everything but do not post"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: post-reel
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post the next due Reel
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          REEL: ${{ inputs.reel }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: python3 scripts/post_reel.py
+
+      - name: Save the posting log
+        if: always()
+        run: |
+          if [ -n "$(git status --porcelain posted.json)" ]; then
+            git config user.name "TheSDTrader bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add posted.json
+            git commit -m "Log posted reel"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
