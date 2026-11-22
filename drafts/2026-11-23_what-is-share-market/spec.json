@@ -1,0 +1,92 @@
+{
+  "brand": "TheSDTrader",
+  "tagline": "शैक्षणिक जानकारी · निवेश सलाह नहीं",
+  "day_tag": "DAY 1 · BEGINNER",
+  "face": "assets/face_original.png",
+  "voice_tempo": 1.08,
+  "lead": 0.12,
+  "pad": 0.15,
+  "music_vol": 0.2,
+  "sfx_vol": 0.4,
+  "voice_vol": 1.5,
+  "cover": {
+    "pill": "TRADING EXPLAINED · DAY 1",
+    "l1": "शेयर बाज़ार",
+    "l2": "जुआ है?",
+    "sub": "WHAT IS THE STOCK MARKET?"
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "line1": "IS THE STOCK MARKET",
+      "line2": "GAMBLING?",
+      "subs": ["क्या *शेयर बाज़ार* जुआ है?", "पहले समझो, यह असल में है *क्या*।"]
+    },
+    {
+      "type": "problem",
+      "line1": "MANY BEGINNERS START",
+      "line2": "WITHOUT UNDERSTANDING",
+      "subs": ["बहुत से *नए लोग* बिना समझे शुरुआत कर देते हैं।"]
+    },
+    {
+      "type": "analogy",
+      "a_hi": "सब्ज़ी मंडी",
+      "a_en": "VEGETABLE MARKET",
+      "a_sub": "यहाँ बिकती है: सब्ज़ी",
+      "b_hi": "शेयर बाज़ार",
+      "b_en": "STOCK MARKET",
+      "b_sub": "यहाँ बिकता है: कंपनी का छोटा हिस्सा",
+      "badge": "SHARE ख़रीदा = कंपनी के हिस्सेदार",
+      "chips": ["Bombay Stock Exchange", "National Stock Exchange"],
+      "subs": [
+        "सोचो, एक *सब्ज़ी मंडी*। वहाँ सब्ज़ी बिकती है।",
+        "शेयर बाज़ार भी एक *मंडी* है — यहाँ बिकता है कंपनी का छोटा सा *हिस्सा*, जिसे कहते हैं *Share*।",
+        "ख़रीदा, तो आप उस कंपनी के *हिस्सेदार*।",
+        "यह होता है *BSE* और *NSE* पर।"
+      ]
+    },
+    {
+      "type": "facts",
+      "source": "स्रोत: BSE · NSE · SEBI की आधिकारिक वेबसाइट",
+      "rows": [
+        {"icon": "1875", "t": "BSE की शुरुआत", "s": "9 जुलाई 1875 · Dalal Street, मुंबई"},
+        {"icon": "1994", "t": "NSE की trading शुरू", "s": "स्थापना 1992 · trading 1994 में शुरू"},
+        {"icon": "clock", "t": "9:15 AM – 3:30 PM", "s": "सोमवार से शुक्रवार · pre-open 9:00–9:15", "hot": true},
+        {"icon": "SEBI", "t": "SEBI = नियामक (Regulator)", "s": "पूरे सिस्टम पर नज़र रखने वाली संस्था"}
+      ],
+      "subs": [
+        "*BSE* शुरू हुआ *9 जुलाई 1875* को।",
+        "*NSE* की trading शुरू हुई *1994* में।",
+        "समय: सोमवार–शुक्रवार, *9:15 AM* से *3:30 PM*।",
+        "नज़र रखता है *SEBI*।"
+      ]
+    },
+    {
+      "type": "lesson",
+      "rows": [
+        {"t": "हिस्सेदारी का बाज़ार", "s": "SHARE MARKET = OWNERSHIP IN COMPANIES"},
+        {"t": "जोखिम असली है", "s": "THE RISK IS REAL"},
+        {"t": "पहले सीखो, फिर कदम बढ़ाओ", "s": "LEARN FIRST. THEN STEP IN."}
+      ],
+      "subs": [
+        "याद रखो: शेयर बाज़ार = कंपनियों में *हिस्सेदारी* का बाज़ार।",
+        "लेकिन *जोखिम* असली है।",
+        "पहले *सीखो*, फिर कदम बढ़ाओ।"
+      ]
+    },
+    {
+      "type": "outro",
+      "tag": "Trading Education · हिंदी में",
+      "cta": ["SAVE", "COMMENT", "FOLLOW"],
+      "notice_hi": "हम SEBI रजिस्टर्ड नहीं हैं।",
+      "notice_en": "Educational purposes only · Not investment advice",
+      "tail": 0.8,
+      "rev": [0.04, 0.55],
+      "subs": [
+        "काम का लगा तो *Save* करो, comment में बताओ — अगला topic क्या हो?",
+        "Follow करो *TheSDTrader*।",
+        "जानकारी सिर्फ़ *शैक्षणिक* है, निवेश सलाह नहीं।"
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ Uses Meta's Instagram API through graph.facebook.com (Facebook Login or Unified 
 tokens), standard library only. Set GRAPH_HOST=graph.instagram.com for an old-style
 Instagram Login token.
 
-Folder layout: reels/YYYY-MM-DD_slug/video.mp4 and reels/YYYY-MM-DD_slug/caption.txt
+Folder layout: reels/YYYY-MM-DD_slug/video.mp4, caption.txt and an optional cover.jpg
 A reel is "due" once its date (India time) has arrived. One reel is posted per day.
 
 Environment:
@@ -104,10 +104,10 @@ def call(method, url, token, body=None, fatal=True):
         return {}
 
 
-def video_urls(name):
+def video_urls(name, filename="video.mp4"):
     repo = os.environ.get("REPO", "SanjayDarji/darji-videos")
     sha = os.environ.get("COMMIT_SHA", "").strip()
-    path = f"reels/{name}/video.mp4"
+    path = f"reels/{name}/{filename}"
     urls = []
     if sha:
         urls.append(f"https://cdn.jsdelivr.net/gh/{repo}@{sha}/{path}")
@@ -158,6 +158,13 @@ def main():
         else:
             sys.exit("The video is not reachable at a public URL. Not posting.")
 
+    cover_url = None
+    if os.path.exists(os.path.join(REELS, name, "cover.jpg")):
+        log("Checking the public cover URL:")
+        cover_url = next((u for u in video_urls(name, "cover.jpg") if reachable(u)), None)
+        if not cover_url:
+            log("Cover not reachable; posting without a custom cover.")
+
     if dry_run:
         log("Dry run finished. Nothing was posted.")
         return
@@ -169,12 +176,10 @@ def main():
     if not ig:
         sys.exit("IG_USER_ID is not set. Add the Instagram account ID as a repository secret.")
 
-    container = call(
-        "POST",
-        f"{BASE}/{ig}/media",
-        token,
-        {"media_type": "REELS", "video_url": url, "caption": caption, "share_to_feed": True},
-    )["id"]
+    body = {"media_type": "REELS", "video_url": url, "caption": caption, "share_to_feed": True}
+    if cover_url:
+        body["cover_url"] = cover_url
+    container = call("POST", f"{BASE}/{ig}/media", token, body)["id"]
     log(f"Container created: {container}")
 
     for _ in range(40):  # about 10 minutes
