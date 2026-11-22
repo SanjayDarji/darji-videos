@@ -45,7 +45,7 @@ def C(rgb, a=1.0):
 # ---------------------------------------------------------------- spec
 REEL = None; SPEC = None; SEG = []; TOTAL = 0.0
 REV = {"hook": [0.0, 0.07], "problem": [0.04], "analogy": [0.04, 0.30, 0.34, 0.62, 0.78],
-       "facts": [0.03, 0.27, 0.50, 0.78], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5]}
+       "facts": [0.03, 0.27, 0.50, 0.78], "headlines": [0.05, 0.38, 0.66], "baskets": [0.03, 0.21, 0.47, 0.73], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5]}
 
 def _dur(p):
     return float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration",
@@ -208,8 +208,8 @@ def slide(e, dy=40): return int((1 - e) * dy)
 def sc_hook(im, d, lt, dur, sc):
     T = reveals(sc, dur)
     e1 = eb(prog(lt, T[0], 0.4)); e2 = eb(prog(lt, T[1], 0.45))
-    text(d, CX, 440 + slide(e1), sc["line1"], int(62 * (0.85 + 0.15 * e1)), WHITE, a=clamp(e1 * 2))
-    text(d, CX, 548 + slide(e2, 60), sc["line2"], int(134 * (0.8 + 0.2 * e2)), GOLD, a=clamp(e2 * 2))
+    text(d, CX, 440 + slide(e1), sc["line1"], int(sc.get("size1", 62) * (0.85 + 0.15 * e1)), WHITE, a=clamp(e1 * 2))
+    text(d, CX, 548 + slide(e2, 60), sc["line2"], int(sc.get("size2", 134) * (0.8 + 0.2 * e2)), GOLD, a=clamp(e2 * 2))
     g = glow_mask(760)
     im.paste(Image.new("RGB", g.size, GOLD), (CX - 380, 965 - 380), g.point(lambda v: int(v * (0.22 + 0.06 * math.sin(lt * 3)))))
     e = eb(prog(lt, 0.15, 0.6))
@@ -338,7 +338,48 @@ def sc_outro(im, d, lt, dur, sc):
         text(d, CX, 1118, sc["notice_hi"], 40, WHITE, a=e)
         text(d, CX, 1166, sc["notice_en"], 28, MUTED, bold=False, a=e)
 
-SCENES = dict(hook=sc_hook, problem=sc_problem, analogy=sc_analogy, facts=sc_facts, lesson=sc_lesson, outro=sc_outro)
+def sc_headlines(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    for i, (txt, up) in enumerate([(sc["h1"], False), (sc["h2"], True)]):
+        e = eo(prog(lt, T[i], .5)); a = clamp(e * 2.2)
+        if e <= .12: continue
+        y0 = 430 + i * 215 + slide(e); y1 = y0 + 175; cy = (y0 + y1) // 2
+        col = GREEN if up else RED
+        rrect(d, [90, y0, 930, y1], 34, CARD, col, 3, a)
+        pts = [(190, cy - 42), (148, cy + 38), (232, cy + 38)] if up else [(190, cy + 42), (148, cy - 38), (232, cy - 38)]
+        d.polygon(pts, fill=C(col, a))
+        text(d, 285, cy, txt, 56, WHITE, anchor="lm", a=a)
+    e = eb(prog(lt, T[2], .5))
+    if e > .15:
+        d.text((CX, 970), "?", font=F(int(230 * clamp(e) * (1 + 0.05 * math.sin(lt * 5)))), fill=C(GOLD), anchor="mm")
+        text(d, CX, 1130, sc["note"], 34, MUTED, bold=False, a=clamp(e))
+
+def sc_baskets(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    e = eo(prog(lt, T[0], .5))
+    if e > .12:
+        rrect(d, [90, 400 + slide(e), 930, 470 + slide(e)], 35, GOLD, None, 0, clamp(e * 2.2))
+        text(d, CX, 435 + slide(e), sc["head"], 36, DARK, a=clamp(e * 2.2))
+    for i, card in enumerate(sc["cards"]):
+        e = eo(prog(lt, T[1 + i], .5)); a = clamp(e * 2.2)
+        if e <= .12: continue
+        y0 = 495 + i * 225 + slide(e); y1 = y0 + 200; cy = (y0 + y1) // 2
+        rrect(d, [90, y0, 930, y1], 30, CARD, GOLD, 3, a)
+        rrect(d, [110, cy - 60, 282, cy + 60], 22, CARD2, None, 0, a)
+        text(d, 196, cy, card["n"], 72, GOLD, a=a)
+        text(d, 320, cy - 30, card["t"], 52, WHITE, anchor="lm", a=a)
+        text(d, 320, cy + 36, card["s"], 30, MUTED, bold=False, anchor="lm", a=a)
+    e = eo(prog(lt, T[3], .5)); a = clamp(e * 2.2)
+    if e > .12:
+        text(d, CX, 965 + slide(e), sc["bars_t"], 38, WHITE, a=a)
+        for k, (lab, wid) in enumerate([("बड़ी", 700), ("मध्यम", 430), ("छोटी", 240)]):
+            ee = eo(prog(lt, T[3] + 0.15 * k, .5)); y = 1015 + k * 52
+            if ee > .2:
+                rrect(d, [90, y, 90 + int(wid * ee), y + 40], 12, GOLD)
+                if ee > .7: text(d, 110, y + 20, lab, 26, DARK, anchor="lm")
+        text(d, CX, 1195, sc["bars_n"], 26, MUTED, bold=False, a=a)
+
+SCENES = dict(hook=sc_hook, headlines=sc_headlines, baskets=sc_baskets, problem=sc_problem, analogy=sc_analogy, facts=sc_facts, lesson=sc_lesson, outro=sc_outro)
 
 # ---------------------------------------------------------------- chrome + subtitles
 def chrome(im, d, t):

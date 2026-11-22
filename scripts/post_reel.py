@@ -81,10 +81,13 @@ def pick(state, today):
         if forced in state["posted"]:
             sys.exit(f"'{forced}' was already posted.")
         return forced
+    due = [n for n in names if n not in state["posted"] and reel_date(n) <= today]
+    on_date = [n for n in due if reel_date(n) == today]
+    if on_date:  # a reel dated today goes out on schedule, even if another one was posted earlier today
+        return on_date[0]
     if any(v.get("posted_on") == today.isoformat() for v in state["posted"].values()):
         log("A reel was already posted today. Nothing to do.")
         return None
-    due = [n for n in names if n not in state["posted"] and reel_date(n) <= today]
     return due[0] if due else None
 
 
