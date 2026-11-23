@@ -46,7 +46,8 @@ def C(rgb, a=1.0):
 REEL = None; SPEC = None; SEG = []; TOTAL = 0.0
 REV = {"hook": [0.0, 0.07], "problem": [0.04], "analogy": [0.04, 0.30, 0.34, 0.62, 0.78],
        "facts": [0.03, 0.27, 0.50, 0.78], "headlines": [0.05, 0.38, 0.66], "baskets": [0.03, 0.21, 0.47, 0.73], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5],
-       "chook": [0.0, 0.14], "anatomy": [0.02, 0.26, 0.42, 0.58, 0.75], "gvr": [0.03, 0.5], "patterns": [0.08, 0.33, 0.7], "quiz": [0.0, 0.2, 0.5, 0.72]}
+       "chook": [0.0, 0.14], "anatomy": [0.02, 0.26, 0.42, 0.58, 0.75], "gvr": [0.03, 0.5], "patterns": [0.08, 0.33, 0.7], "quiz": [0.0, 0.2, 0.5, 0.72],
+       "lvhook": [0.0, 0.2], "lvdef": [0.03, 0.5], "lvflip": [0.03], "quiz2": [0.0, 0.2, 0.5, 0.72]}
 
 def _dur(p):
     return float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration",
@@ -529,6 +530,129 @@ def sc_quiz(im, d, lt, dur, sc):
 SCENES = dict(hook=sc_hook, headlines=sc_headlines, baskets=sc_baskets, problem=sc_problem, analogy=sc_analogy, facts=sc_facts, lesson=sc_lesson, outro=sc_outro,
               chook=sc_chook, anatomy=sc_anatomy, gvr=sc_gvr, patterns=sc_patterns, quiz=sc_quiz)
 
+
+# ---------------------------------------------------------------- support / resistance scenes
+def poly_anim(d, pts, p, col, a=1.0, width=6):
+    n = len(pts) - 1; pos = clamp(p) * n
+    for i in range(n):
+        if pos <= i: break
+        f = min(1.0, pos - i)
+        x0, y0 = pts[i]; x1, y1 = pts[i + 1]
+        d.line([(x0, y0), (x0 + (x1 - x0) * f, y0 + (y1 - y0) * f)], fill=C(col, a), width=width)
+        r = width // 2
+        d.ellipse([x0 - r, y0 - r, x0 + r, y0 + r], fill=C(col, a))
+    i = min(int(pos), n - 1); f = min(1.0, pos - i)
+    hx = pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f; hy = pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f
+    if 0 < p < 1: d.ellipse([hx - 10, hy - 10, hx + 10, hy + 10], fill=C(GOLD, a))
+    return pos
+
+def touch_rings(d, pts, pos, idxs, seg_t, col):
+    for k in idxs:
+        if pos >= k:
+            age = (pos - k) * seg_t
+            if age < 0.6:
+                r = int(12 + age * 80); al = 1 - age / 0.6; x, y = pts[k]
+                d.ellipse([x - r, y - r, x + r, y + r], outline=C(col, al), width=4)
+
+def sc_lvhook(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    e1 = eb(prog(lt, T[0], .4)); e2 = eb(prog(lt, T[1], .45))
+    text(d, CX, 440 + slide(e1), sc["line1"], int(sc.get("size1", 58) * (0.85 + 0.15 * e1)), WHITE, a=clamp(e1 * 2))
+    text(d, CX, 556 + slide(e2, 60), sc["line2"], int(sc.get("size2", 100) * (0.8 + 0.2 * e2)), GOLD, a=clamp(e2 * 2))
+    ce = eo(prog(lt, 0.1, .5))
+    rrect(d, [90, 650, 930, 1185], 34, CARD, CARD2, 2, clamp(ce * 2))
+    yr, ys = 745, 1085
+    for y, col, lab, t0, up in [(yr, RED, "RESISTANCE · छत", .35, True), (ys, GREEN, "SUPPORT · फ़र्श", .6, False)]:
+        e = eo(prog(lt, t0, .4))
+        if e > .05:
+            dashed(d, 120, y, 120 + int(780 * e), col, clamp(e * 2), width=4)
+            text(d, 135, y - 26 if up else y + 28, lab, 26, col, anchor="lm", a=clamp(e * 2))
+    prices = [64, 69.6, 60.4, 69.8, 60.3, 69.5, 60.6, 66]
+    xy = [(160 + int(i * 105), int(ys - (p - 60) / 10 * (ys - yr))) for i, p in enumerate(prices)]
+    PD = sc.get("pathdur", 3.6)
+    pos = poly_anim(d, xy, prog(lt, .9, PD), WHITE, 1.0, 7)
+    touch_rings(d, xy, pos, [1, 2, 3, 4, 5, 6], PD / (len(xy) - 1), GOLD)
+    text(d, CX, 1218, sc.get("note", ""), 24, MUTED, bold=False, a=clamp(ce))
+
+def sc_lvdef(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    specs = [(GREEN, "SUPPORT", "फ़र्श", sc["s1"], sc["s2"], [(0, .05), (.30, .95), (.5, .45), (.72, .95), (1, .35)], .95),
+             (RED, "RESISTANCE", "छत", sc["r1"], sc["r2"], [(0, .95), (.3, .05), (.5, .55), (.72, .05), (1, .65)], .05)]
+    for i, (col, ttl, hi, l1, l2, pts, lv) in enumerate(specs):
+        e = eo(prog(lt, T[i], .5)); a = clamp(e * 2.2)
+        if e <= .12: continue
+        x0 = 90 + i * 430; cx = x0 + 205; oy = slide(e)
+        rrect(d, [x0, 420 + oy, x0 + 410, 1165 + oy], 34, CARD, col, 3, a)
+        text(d, cx, 478 + oy, ttl, 42, col, a=a)
+        text(d, cx, 538 + oy, hi, 42, GOLD, a=a)
+        ly = int(610 + lv * 340) + oy
+        dashed(d, x0 + 30, ly, x0 + 380, col, a, width=4)
+        xy = [(x0 + 45 + int(u * 320), 610 + int(v * 340) + oy) for u, v in pts]
+        pos = poly_anim(d, xy, prog(lt, T[i] + .2, 2.2), WHITE, a, 6)
+        touch_rings(d, xy, pos, [1, 3], 2.2 / (len(xy) - 1), col)
+        text(d, cx, 1050 + oy, l1, 36, WHITE, a=a)
+        text(d, cx, 1105 + oy, l2, 28, MUTED, bold=False, a=a)
+    text(d, CX, 1208, sc.get("note", ""), 24, MUTED, bold=False, a=eo(prog(lt, T[1] + .3, .5)))
+
+def sc_lvflip(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    ce = eo(prog(lt, T[0], .5)); a = clamp(ce * 2.2)
+    if ce <= .1: return
+    rrect(d, [90, 430, 930, 1170], 34, CARD, GOLD, 3, a)
+    text(d, CX, 484, sc["title"], 44, GOLD, a=a)
+    X = lambda u: 140 + int(u * 750); Y = lambda v: 540 + int(v * 580)
+    uv = [(0, .88), (.12, .5), (.22, .8), (.34, .5), (.44, .76), (.56, .16), (.68, .5), (.8, .2), (.93, .08)]
+    xy = [(X(u), Y(v)) for u, v in uv]
+    PD = sc.get("pathdur", 6.5); n = len(xy) - 1
+    p = prog(lt, .6, PD); pos = p * n; flipped = pos >= 5.0
+    ly = Y(.5); col = GREEN if flipped else RED
+    dashed(d, 120, ly, 900, col, a, width=4)
+    if not flipped: text(d, 135, ly - 28, "छत · RESISTANCE", 28, RED, anchor="lm", a=a)
+    else: text(d, 895, ly + 52, "अब फ़र्श · SUPPORT", 28, GREEN, anchor="rm", a=a)
+    poly_anim(d, xy, p, WHITE, a, 7)
+    touch_rings(d, xy, pos, [1, 3, 6], PD / n, GOLD)
+    if flipped:
+        e = clamp((pos - 5.0) * (PD / n) / 0.4)
+        text(d, xy[5][0] - 10, xy[5][1] - 36, "BREAKOUT", 28, GOLD, a=e)
+    text(d, CX, 1138, sc.get("note", ""), 24, MUTED, bold=False, a=a)
+
+def sc_quiz2(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    e = eo(prog(lt, T[0], .5))
+    if e > .12:
+        a = clamp(e * 2.2)
+        rrect(d, [90, 400 + slide(e), 930, 470 + slide(e)], 35, GOLD, None, 0, a)
+        text(d, CX, 435 + slide(e), sc["head"], 36, DARK, a=a)
+        rrect(d, [90, 500, 470, 890], 30, CARD, CARD2, 3, a)
+        ly = 590
+        dashed(d, 110, ly, 450, GOLD, a, width=4)
+        text(d, 112, ly - 26, "₹100 = ?", 30, GOLD, anchor="lm", a=a)
+        pv = [(0, .95), (.22, .2), (.38, .72), (.55, .2), (.70, .74), (.88, .2), (1.0, .62)]
+        xy = [(120 + int(u * 320), 520 + int(v * 350)) for u, v in pv]
+        PD = sc.get("pathdur", 4.0)
+        pos = poly_anim(d, xy, prog(lt, T[1], PD), WHITE, a, 6)
+        touch_rings(d, xy, pos, [1, 3, 5], PD / (len(xy) - 1), GOLD)
+    e = eb(prog(lt, T[1], .5)); a = clamp(e * 2.2)
+    if e > .12:
+        rrect(d, [490, 500 + slide(e), 930, 890 + slide(e)], 30, CARD, GOLD, 3, a)
+        text(d, 710, 600 + slide(e), sc["l1"], 40, WHITE, a=a)
+        text(d, 710, 690 + slide(e), sc["l2"], 36, MUTED, bold=False, a=a)
+        text(d, 710, 790 + slide(e), sc["l3"], 40, GOLD, a=a)
+    e = eb(prog(lt, T[2], .5)); a = clamp(e * 2.2)
+    if e > .12:
+        for k, (lab, col) in enumerate([("A · सपोर्ट", GREEN), ("B · रेजिस्टेंस", RED)]):
+            x0 = 90 + k * 430; y0 = 935 + slide(e)
+            rrect(d, [x0, y0, x0 + 410, y0 + 115], 34, CARD, col, 4, a)
+            d.ellipse([x0 + 26, y0 + 36, x0 + 68, y0 + 78], fill=C(col, a))
+            text(d, x0 + 86, y0 + 58, lab, 38, WHITE, anchor="lm", a=a)
+    e = eb(prog(lt, T[3], .5))
+    if e > .12:
+        s = 1 + 0.04 * math.sin(lt * 6)
+        text(d, CX, 1105, sc["ask"], int(46 * s), GOLD, a=clamp(e * 2))
+        text(d, CX, 1170, sc.get("note", ""), 24, MUTED, bold=False, a=clamp(e))
+
+SCENES.update(lvhook=sc_lvhook, lvdef=sc_lvdef, lvflip=sc_lvflip, quiz2=sc_quiz2)
+
 # ---------------------------------------------------------------- chrome + subtitles
 def chrome(im, d, t):
     av = avatar(46); im.paste(av, (90, 262), av)
@@ -678,6 +802,13 @@ def cover(path):
     d = ImageDraw.Draw(im)
     if cv.get("candles"):
         draw_series(d, 150, 90, 52, 1010, 1500, lambda i: 1.0, a=0.6)
+    if cv.get("levels"):
+        yr, ys = 1040, 1480
+        dashed(d, 100, yr, 980, RED, .75, width=4); dashed(d, 100, ys, 980, GREEN, .75, width=4)
+        text(d, 100, yr - 30, "RESISTANCE", 28, RED, anchor="lm", a=.9); text(d, 100, ys + 32, "SUPPORT", 28, GREEN, anchor="lm", a=.9)
+        pr = [64, 69.6, 60.4, 69.8, 60.3, 69.5, 60.6, 66]
+        pts = [(120 + int(i * 115), int(ys - (p - 60) / 10 * (ys - yr))) for i, p in enumerate(pr)]
+        for i in range(len(pts) - 1): d.line([pts[i], pts[i + 1]], fill=C(WHITE, .55), width=7)
     rrect(d, [200, 290, 880, 360], 35, CARD, GOLD, 3)
     text(d, 540, 325, cv["pill"], 34, GOLD)
     text(d, 540, 520, cv["l1"], cv.get("s1", 178), WHITE)
