@@ -1,0 +1,28 @@
+चार्ट के ये हरे-लाल डिब्बे क्या बोलते हैं? 🕯️ कैंडलस्टिक पढ़ना सीखो (Candlestick chart kaise padhe, Hindi mein) 👇
+
+हर कैंडल में 4 कीमतें होती हैं:
+• Open = खुलने की कीमत
+• High = सबसे ऊँची कीमत
+• Low = सबसे नीची कीमत
+• Close = बंद होने की कीमत
+
+🟢 Close > Open = हरी कैंडल (खरीदार भारी)
+🔴 Close < Open = लाल कैंडल (बेचने वाले भारी)
+(रंग प्लेटफ़ॉर्म पर बदले जा सकते हैं)
+
+3 मशहूर पैटर्न: Doji (असमंजस), Hammer (गिरावट के बाद संभावित पलटाव का सुराग़), Bullish Engulfing (बड़ी हरी कैंडल पिछली लाल को ढके)।
+याद रखो: एक कैंडल सुराग़ है, गारंटी नहीं। ट्रेंड और अगली कैंडल की पुष्टि भी देखो।
+
+🧠 टेस्ट: किसी कैंडल में Open ₹250 और Close ₹220 है। हरी या लाल? कमेंट में A (हरी) या B (लाल) लिखो 👇
+
+📌 Save करो
+📤 Send करो उस दोस्त को जिसे चार्ट डरावने लगते हैं
+➡️ Follow करो @thesdtrader, रोज़ एक नया पाठ
+
+स्रोत: Zerodha Varsity और INDmoney की व्याख्याएँ। वीडियो के चार्ट और आँकड़े सिर्फ़ उदाहरण हैं, असली बाज़ार डेटा नहीं।
+
+⚠️ हम SEBI रजिस्टर्ड नहीं हैं। यह जानकारी सिर्फ़ शैक्षणिक है, निवेश सलाह नहीं।
+
+Disclaimer: This content is for educational and informational purposes only and does not constitute investment advice, a recommendation, or a buy/sell signal. Stock market investments are subject to market risks. Please do your own research before making any investment decisions.
+
+#CandlestickPatterns #CandlestickHindi #ShareMarketHindi #StockMarketIndia #TheSDTrader

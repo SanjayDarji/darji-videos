@@ -45,7 +45,8 @@ def C(rgb, a=1.0):
 # ---------------------------------------------------------------- spec
 REEL = None; SPEC = None; SEG = []; TOTAL = 0.0
 REV = {"hook": [0.0, 0.07], "problem": [0.04], "analogy": [0.04, 0.30, 0.34, 0.62, 0.78],
-       "facts": [0.03, 0.27, 0.50, 0.78], "headlines": [0.05, 0.38, 0.66], "baskets": [0.03, 0.21, 0.47, 0.73], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5]}
+       "facts": [0.03, 0.27, 0.50, 0.78], "headlines": [0.05, 0.38, 0.66], "baskets": [0.03, 0.21, 0.47, 0.73], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5],
+       "chook": [0.0, 0.14], "anatomy": [0.02, 0.26, 0.42, 0.58, 0.75], "gvr": [0.03, 0.5], "patterns": [0.08, 0.33, 0.7], "quiz": [0.0, 0.2, 0.5, 0.72]}
 
 def _dur(p):
     return float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration",
@@ -379,7 +380,154 @@ def sc_baskets(im, d, lt, dur, sc):
                 if ee > .7: text(d, 110, y + 20, lab, 26, DARK, anchor="lm")
         text(d, CX, 1195, sc["bars_n"], 26, MUTED, bold=False, a=a)
 
-SCENES = dict(hook=sc_hook, headlines=sc_headlines, baskets=sc_baskets, problem=sc_problem, analogy=sc_analogy, facts=sc_facts, lesson=sc_lesson, outro=sc_outro)
+
+# ---------------------------------------------------------------- candlestick scenes
+def candle(d, x, hi, lo, b0, b1, w, col, a=1.0, ghost=False):
+    top, bot = min(b0, b1), max(b0, b1)
+    if bot - top < 7:
+        m = (top + bot) // 2; top, bot = m - 3, m + 4
+    d.line([(x, hi), (x, lo)], fill=C(MUTED if ghost else col, a), width=max(4, w // 9))
+    if ghost:
+        d.rounded_rectangle([x - w // 2, top, x + w // 2, bot], radius=max(3, w // 12), fill=C(CARD2, a), outline=C(MUTED, a), width=4)
+    else:
+        d.rounded_rectangle([x - w // 2, top, x + w // 2, bot], radius=max(3, w // 12), fill=C(col, a))
+
+def dashed(d, x0, y, x1, col, a, dash=14, gap=10, width=3):
+    x = x0
+    while x < x1:
+        d.line([(x, y), (min(x + dash, x1), y)], fill=C(col, a), width=width); x += dash + gap
+
+SERIES = [(50, 56, 47, 54), (54, 58, 51, 52), (52, 53, 44, 46), (46, 50, 42, 49), (49, 57, 48, 55),
+          (55, 60, 53, 58), (58, 61, 54, 55), (55, 56, 45, 47), (47, 62, 46, 60)]  # illustrative only
+
+def py(p, y0, y1, lo=40, hi=64): return int(y1 - (p - lo) / (hi - lo) * (y1 - y0))
+
+def draw_series(d, x0, step, w, y0, y1, k, a=1.0):
+    for i, (o, h, l, c) in enumerate(SERIES):
+        e = k(i)
+        if e <= 0.02: continue
+        col = GREEN if c >= o else RED
+        cc = o + (c - o) * e; hh = o + (h - o) * e; ll = o + (l - o) * e
+        candle(d, x0 + i * step, py(hh, y0, y1), py(ll, y0, y1), py(o, y0, y1), py(cc, y0, y1), w, col, min(1.0, e * 3) * a)
+
+def sc_chook(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    e1 = eb(prog(lt, T[0], .4)); e2 = eb(prog(lt, T[1], .45))
+    text(d, CX, 440 + slide(e1), sc["line1"], int(sc.get("size1", 62) * (0.85 + 0.15 * e1)), WHITE, a=clamp(e1 * 2))
+    text(d, CX, 556 + slide(e2, 60), sc["line2"], int(sc.get("size2", 110) * (0.8 + 0.2 * e2)), GOLD, a=clamp(e2 * 2))
+    ce = eo(prog(lt, 0.1, .5))
+    rrect(d, [90, 650, 930, 1185], 34, CARD, CARD2, 2, clamp(ce * 2))
+    for gy in (770, 890, 1010, 1120): d.line([(120, gy), (900, gy)], fill=C(CARD2, .55 * clamp(ce)), width=2)
+    draw_series(d, 165, 88, 44, 700, 1150, lambda i: eo(prog(lt, 0.3 + i * 0.2, 0.35)))
+    e = eb(prog(lt, 0.3 + 8 * 0.2 + 0.35, 0.5))
+    if e > .1:
+        x = 165 + 8 * 88; pul = 0.65 + 0.35 * math.sin(lt * 7)
+        rrect(d, [x - 42, py(62, 700, 1150) - 22, x + 42, py(46, 700, 1150) + 22], 20, None, GOLD, 4, clamp(e) * pul)
+    text(d, CX, 1218, sc.get("note", ""), 24, MUTED, bold=False, a=clamp(ce))
+
+def sc_anatomy(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    ce = eb(prog(lt, T[0], .7)); cx = 300; mid = 810
+    Y = dict(high=480, close=620, open=980, low=1140)
+    if ce > .05:
+        s = clamp(ce)
+        g = glow_mask(520)
+        im.paste(Image.new("RGB", g.size, GREEN), (cx - 260, mid - 260), g.point(lambda v: int(v * 0.16 * s)))
+        yy = lambda y: int(mid + (y - mid) * s)
+        candle(d, cx, yy(Y["high"]), yy(Y["low"]), yy(Y["close"]), yy(Y["open"]), 150, GREEN, a=clamp(ce * 2))
+        if s > .9:
+            text(d, cx, 800, "बॉडी", 42, DARK)
+            text(d, cx - 92, 550, "पूँछ", 28, MUTED, bold=False, anchor="rm")
+            text(d, cx - 92, 1060, "पूँछ", 28, MUTED, bold=False, anchor="rm")
+    for name, hi_txt, key, k in [("OPEN", "खुलने की कीमत", "open", 1), ("HIGH", "सबसे ऊँची कीमत", "high", 2),
+                                 ("LOW", "सबसे नीची कीमत", "low", 3), ("CLOSE", "बंद होने की कीमत", "close", 4)]:
+        e = eo(prog(lt, T[k], .45)); a = clamp(e * 2.2)
+        if e <= .12: continue
+        y = Y[key]; ox = int((1 - e) * 40); sx = cx + 75 if key in ("open", "close") else cx
+        dashed(d, sx, y, 505, GOLD, a)
+        d.ellipse([sx - 9, y - 9, sx + 9, y + 9], fill=C(GOLD, a))
+        rrect(d, [510 + ox, y - 46, 930, y + 46], 26, CARD, GOLD, 3, a)
+        text(d, 538 + ox, y - 16, name, 38, WHITE, anchor="lm", a=a)
+        text(d, 538 + ox, y + 24, hi_txt, 28, MUTED, bold=False, anchor="lm", a=a)
+
+def sc_gvr(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    for i, (col, ttl, l1, l2) in enumerate([(GREEN, "हरी कैंडल", sc["g1"], sc["g2"]), (RED, "लाल कैंडल", sc["r1"], sc["r2"])]):
+        e = eo(prog(lt, T[i], .5)); a = clamp(e * 2.2)
+        if e <= .12: continue
+        x0 = 90 + i * 430; cx = x0 + 205; oy = slide(e)
+        rrect(d, [x0, 420 + oy, x0 + 410, 1165 + oy], 34, CARD, col, 3, a)
+        text(d, cx, 480 + oy, ttl, 46, col, a=a)
+        gr = eb(prog(lt, T[i] + .1, .6)); s = clamp(gr); m = 770 + oy
+        yy = lambda y: int(m + (y + oy - m) * s)
+        top, bot = 660, 880
+        candle(d, cx, yy(580), yy(980), yy(top), yy(bot), 96, col, a=a)
+        if s > .9:
+            up = i == 0
+            text(d, cx - 66, top + oy, "CLOSE" if up else "OPEN", 26, MUTED, bold=False, anchor="rm", a=a)
+            text(d, cx - 66, bot + oy, "OPEN" if up else "CLOSE", 26, MUTED, bold=False, anchor="rm", a=a)
+            pts = [(cx + 118, 690 + oy), (cx + 88, 750 + oy), (cx + 148, 750 + oy)] if up else [(cx + 118, 850 + oy), (cx + 88, 790 + oy), (cx + 148, 790 + oy)]
+            d.polygon(pts, fill=C(col, a))
+        text(d, cx, 1060 + oy, l1, 38, WHITE, a=a)
+        text(d, cx, 1112 + oy, l2, 30, MUTED, bold=False, a=a)
+    text(d, CX, 1208, sc.get("note", ""), 24, MUTED, bold=False, a=eo(prog(lt, T[1] + .3, .5)))
+
+def mini_pattern(d, kind, cx, cy, a):
+    if kind == "doji":
+        candle(d, cx, cy - 78, cy + 78, cy, cy, 86, WHITE, a)
+    elif kind == "hammer":
+        candle(d, cx, cy - 70, cy + 84, cy - 66, cy - 24, 70, GREEN, a)
+    else:
+        candle(d, cx - 36, cy - 28, cy + 44, cy - 12, cy + 30, 44, RED, a)
+        candle(d, cx + 34, cy - 74, cy + 80, cy + 66, cy - 58, 56, GREEN, a)
+
+def sc_patterns(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    for i, row in enumerate(sc["rows"]):
+        e = eo(prog(lt, T[i], .5)); a = clamp(e * 2.2)
+        if e <= .12: continue
+        y0 = 405 + i * 262 + slide(e); y1 = y0 + 240; cy = (y0 + y1) // 2
+        rrect(d, [90, y0, 930, y1], 32, CARD, GOLD if row.get("hot") else CARD2, 3, a)
+        rrect(d, [108, y0 + 18, 292, y1 - 18], 24, CARD2, None, 0, a)
+        gr = eb(prog(lt, T[i] + .1, .5))
+        if gr > .2: mini_pattern(d, row["kind"], 200, cy, a)
+        text(d, 318, cy - 56, row["t"], 42, WHITE, anchor="lm", a=a)
+        text(d, 318, cy - 2, row["s1"], 30, GOLD, bold=False, anchor="lm", a=a)
+        text(d, 318, cy + 46, row["s2"], 30, MUTED, bold=False, anchor="lm", a=a)
+    if "source" in sc:
+        text(d, CX, 1215, sc["source"], 24, MUTED, bold=False, a=eo(prog(lt, T[1], .6)))
+
+def sc_quiz(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    e = eo(prog(lt, T[0], .5))
+    if e > .12:
+        rrect(d, [90, 400 + slide(e), 930, 470 + slide(e)], 35, GOLD, None, 0, clamp(e * 2.2))
+        text(d, CX, 435 + slide(e), sc["head"], 36, DARK, a=clamp(e * 2.2))
+        pul = 1 + 0.06 * math.sin(lt * 5)
+        candle(d, 280, 520, 860, 590, 780, 150, MUTED, a=clamp(e * 2), ghost=True)
+        d.text((280, 685), "?", font=F(int(130 * pul)), fill=C(GOLD, 0.95 * clamp(e * 2)), anchor="mm")
+    e = eb(prog(lt, T[1], .5)); a = clamp(e * 2.2)
+    if e > .12:
+        for k, (nm, val) in enumerate([("OPEN", sc["open"]), ("CLOSE", sc["close"])]):
+            y0 = 545 + k * 150 + slide(e); y1 = y0 + 125
+            rrect(d, [490, y0, 930, y1], 28, CARD, GOLD, 3, a)
+            text(d, 520, (y0 + y1) // 2, nm, 34, MUTED, anchor="lm", a=a)
+            text(d, 905, (y0 + y1) // 2, val, 60, GOLD, anchor="rm", a=a)
+    e = eb(prog(lt, T[2], .5)); a = clamp(e * 2.2)
+    if e > .12:
+        for k, (lab, col) in enumerate([("A · हरी", GREEN), ("B · लाल", RED)]):
+            x0 = 90 + k * 430; y0 = 905 + slide(e)
+            rrect(d, [x0, y0, x0 + 410, y0 + 120], 34, CARD, col, 4, a)
+            d.ellipse([x0 + 28, y0 + 38, x0 + 72, y0 + 82], fill=C(col, a))
+            text(d, x0 + 100, y0 + 60, lab, 46, WHITE, anchor="lm", a=a)
+    e = eb(prog(lt, T[3], .5))
+    if e > .12:
+        s = 1 + 0.04 * math.sin(lt * 6)
+        text(d, CX, 1105, sc["ask"], int(46 * s), GOLD, a=clamp(e * 2))
+        text(d, CX, 1180, sc.get("note", ""), 24, MUTED, bold=False, a=clamp(e))
+
+SCENES = dict(hook=sc_hook, headlines=sc_headlines, baskets=sc_baskets, problem=sc_problem, analogy=sc_analogy, facts=sc_facts, lesson=sc_lesson, outro=sc_outro,
+              chook=sc_chook, anatomy=sc_anatomy, gvr=sc_gvr, patterns=sc_patterns, quiz=sc_quiz)
 
 # ---------------------------------------------------------------- chrome + subtitles
 def chrome(im, d, t):
@@ -528,10 +676,12 @@ def cover(path):
     im.paste(Image.new("RGB", g.size, GOLD), (540 - 550, 1240 - 550), g.point(lambda v: int(v * 0.30)))
     im.paste(Image.new("RGB", g.size, BLUE), (200 - 550, 420 - 550), g.point(lambda v: int(v * 0.16)))
     d = ImageDraw.Draw(im)
+    if cv.get("candles"):
+        draw_series(d, 150, 90, 52, 1010, 1500, lambda i: 1.0, a=0.6)
     rrect(d, [200, 290, 880, 360], 35, CARD, GOLD, 3)
     text(d, 540, 325, cv["pill"], 34, GOLD)
-    text(d, 540, 520, cv["l1"], 178, WHITE)
-    text(d, 540, 735, cv["l2"], 210, GOLD)
+    text(d, 540, 520, cv["l1"], cv.get("s1", 178), WHITE)
+    text(d, 540, 735, cv["l2"], cv.get("s2", 210), GOLD)
     text(d, 540, 905, cv["sub"], 54, WHITE)
     paste_card(im, face_card(500, 544), 540, 1245, yaw=0.35, scale=1.0)
     d = ImageDraw.Draw(im)
