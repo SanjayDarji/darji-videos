@@ -57,7 +57,7 @@ REEL = None; SPEC = None; SEG = []; TOTAL = 0.0
 REV = {"hook": [0.0, 0.07], "problem": [0.04], "analogy": [0.04, 0.30, 0.34, 0.62, 0.78],
        "facts": [0.03, 0.27, 0.50, 0.78], "headlines": [0.05, 0.38, 0.66], "baskets": [0.03, 0.21, 0.47, 0.73], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5],
        "chook": [0.0, 0.14], "anatomy": [0.02, 0.26, 0.42, 0.58, 0.75], "gvr": [0.03, 0.5], "patterns": [0.08, 0.33, 0.7], "quiz": [0.0, 0.2, 0.5, 0.72],
-       "isohook": [0.0, 0.2], "isosplit": [0.03, 0.12, 0.3, 0.55], "isocmp": [0.03, 0.2, 0.4, 0.6], "isobars": [0.03, 0.15], "poll": [0.0, 0.18, 0.5, 0.75],
+       "isohook": [0.0, 0.2], "isosplit": [0.03, 0.12, 0.3, 0.55], "isoflow": [0.03, 0.1, 0.2, 0.3, 0.5, 0.6, 0.8], "isocmp": [0.03, 0.2, 0.4, 0.6], "isobars": [0.03, 0.15], "poll": [0.0, 0.18, 0.5, 0.75],
        "lvhook": [0.0, 0.2], "lvdef": [0.03, 0.5], "lvflip": [0.03], "quiz2": [0.0, 0.2, 0.5, 0.72]}
 
 def _dur(p):
@@ -877,7 +877,41 @@ def sc_isosplit(im, d, lt, dur, sc):
             if sb: text(d, x0 + 127, 1185 + slide(e), sb, 22, MUTED, bold=False, a=aa)
     text(d, CX, 1236, sc.get("note", ""), 22, MUTED, bold=False, a=clamp(be))
 
-SCENES.update(isohook=sc_isohook, isocmp=sc_isocmp, isobars=sc_isobars, poll=sc_poll, isosplit=sc_isosplit)
+def sc_isoflow(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    be = eo(prog(lt, T[0], .5)); a0 = clamp(be * 2)
+    rrect(d, [90, 420, 930, 1215], 34, CARD, CARD2, 2, a0)
+    text(d, CX, 468, sc["title"], 30, GOLD, a=a0)
+    text(d, CX, 506, sc.get("sub", ""), 22, MUTED, bold=False, a=a0)
+    AX = 400; SCL = 300.0 / sc.get("vmax", 16041)
+    for bi, blk in enumerate(sc["blocks"]):
+        y0 = 540 + bi * 262; ix = blk["ix"]
+        he = eo(prog(lt, T[ix[0]], .5)); ha = clamp(he * 2.2)
+        if he > .05:
+            text(d, 120, y0 + 20, blk["name"], 34, WHITE, anchor="lm", a=ha)
+            text(d, 120, y0 + 58, blk["sub"], 22, MUTED, bold=False, anchor="lm", a=ha)
+            d.line([(AX, y0 + 96), (AX, y0 + 258)], fill=C(MUTED, ha * .6), width=2)
+        for k, (lab, v) in enumerate(blk["bars"]):
+            g = eo(prog(lt, T[ix[1 + k]], .8))
+            if g <= .02: continue
+            yb = y0 + 96 + k * 84; ga = clamp(g * 3)
+            text(d, 120, yb + 2, lab, 22, MUTED, bold=False, anchor="lm", a=ga)
+            col = SER3[1] if v < 0 else SER3[0]
+            w = max(6, int(abs(v) * SCL * g)); bx = AX if v > 0 else AX - w
+            obl_box(d, bx, yb + 30, w, 40, 18, 11, col, ga)
+            val = ("+" if v > 0 else "\u2212") + "\u20b9" + format(abs(v) * g, ",.0f") + " cr"
+            if v > 0: text(d, AX + w + 32, yb + 50, val, 27, WHITE, anchor="lm", a=ga)
+            else: text(d, bx - 12, yb + 50, val, 27, WHITE, anchor="rm", a=ga)
+    pl = sc.get("pill")
+    if pl:
+        pe = eb(prog(lt, T[pl["ix"]], .5)); pa = clamp(pe * 2.2)
+        if pe > .08:
+            rrect(d, [150, 1078, 870, 1192], 34, CARD2, GOLD, 3, pa)
+            text(d, CX, 1118 + slide(pe), pl["t"], 38, GOLD, a=pa)
+            text(d, CX, 1166 + slide(pe), pl["s"], 22, MUTED, bold=False, a=pa)
+    text(d, CX, 1236, sc.get("note", ""), 22, MUTED, bold=False, a=clamp(be))
+
+SCENES.update(isohook=sc_isohook, isocmp=sc_isocmp, isobars=sc_isobars, poll=sc_poll, isosplit=sc_isosplit, isoflow=sc_isoflow)
 
 def cover_s2(path):
     cv = SPEC["cover"]
@@ -1284,18 +1318,30 @@ def cover_s5(path):
         x = 80
         for part, is_hl in hl:
             d.text((x, y0 + i * 84), part, font=hf, fill=GOLDN if is_hl else NAVY, anchor="lm", language="hi"); x += d.textlength(part, font=hf, language="hi")
-    # venn
-    vl, cL, cR = venn_layer(150, cv.get("venn_dist", 120))
-    vx, vy = 6, 1290
-    shadow = vl.split()[3].filter(ImageFilter.GaussianBlur(14)).point(lambda v: int(v * .30))
-    im.paste(Image.new("RGB", vl.size, (60, 50, 30)), (vx + 6, vy + 14), shadow)
-    im.paste(vl.convert("RGB"), (vx, vy), vl.split()[3])
-    d = ImageDraw.Draw(im)
-    lx = vx + (cL[0] + cR[0]) / 2; ly = vy + cL[1]
-    d.text((lx, ly - 8), cv["badge"], font=SER(60), fill=PW, anchor="mm")
-    d.text((lx, ly + 40), cv.get("badge_cap", "OVERLAP"), font=ImageFont.truetype(POPB, 19), fill=(255, 232, 190), anchor="mm")
-    d.text((vx + cL[0] - 30, vy + 4), cv["va"], font=ImageFont.truetype(POPB, 30), fill=NAVY, anchor="mm")
-    d.text((vx + cR[0] + 30, vy + 4), cv["vb"], font=ImageFont.truetype(POPB, 30), fill=(150, 104, 30), anchor="mm")
+    # venn / graphic
+    if cv.get("graphic") == "peak":
+        gx0, gy0, gx1, gy1 = 30, 1296, 470, 1606
+        d.rounded_rectangle([gx0 + 6, gy0 + 12, gx1 + 6, gy1 + 12], 36, fill=(224, 210, 182))
+        d.rounded_rectangle([gx0, gy0, gx1, gy1], 36, fill=(255, 255, 255), outline=(226, 205, 160), width=2)
+        d.text((gx0 + 30, gy0 + 36), "HYPE vs TIME", font=ImageFont.truetype(POPB, 24), fill=NAVY, anchor="lm")
+        pts = [(62, 1560), (110, 1540), (160, 1505), (210, 1455), (255, 1415), (292, 1400), (330, 1432), (372, 1500), (420, 1552)]
+        d.line(pts, fill=NAVY, width=9, joint="curve")
+        d.ellipse([292 - 17, 1400 - 17, 292 + 17, 1400 + 17], fill=GOLDN, outline=(255, 255, 255), width=4)
+        d.text((292, 1368), "PEAK BUZZ", font=ImageFont.truetype(POPB, 22), fill=GOLDN, anchor="mm")
+        d.text((372, 1585), "LATE MONEY", font=ImageFont.truetype(POPB, 20), fill=NAVY, anchor="mm")
+        d.text((gx0 + 30, gy1 - 18), "ILLUSTRATIVE", font=ImageFont.truetype(POPB, 18), fill=(120, 110, 90), anchor="lm")
+    else:
+        vl, cL, cR = venn_layer(150, cv.get("venn_dist", 120))
+        vx, vy = 6, 1290
+        shadow = vl.split()[3].filter(ImageFilter.GaussianBlur(14)).point(lambda v: int(v * .30))
+        im.paste(Image.new("RGB", vl.size, (60, 50, 30)), (vx + 6, vy + 14), shadow)
+        im.paste(vl.convert("RGB"), (vx, vy), vl.split()[3])
+        d = ImageDraw.Draw(im)
+        lx = vx + (cL[0] + cR[0]) / 2; ly = vy + cL[1]
+        d.text((lx, ly - 8), cv["badge"], font=SER(60), fill=PW, anchor="mm")
+        d.text((lx, ly + 40), cv.get("badge_cap", "OVERLAP"), font=ImageFont.truetype(POPB, 19), fill=(255, 232, 190), anchor="mm")
+        d.text((vx + cL[0] - 30, vy + 4), cv["va"], font=ImageFont.truetype(POPB, 30), fill=NAVY, anchor="mm")
+        d.text((vx + cR[0] + 30, vy + 4), cv["vb"], font=ImageFont.truetype(POPB, 30), fill=(150, 104, 30), anchor="mm")
     d.text((80, 1634), cv["src"], font=ImageFont.truetype(POPB, 22), fill=(110, 100, 80), anchor="lm", language="hi")
     # person (no outline, soft shadow, bleeds off the bottom like a magazine cover)
     if cv.get("face") == "card":
