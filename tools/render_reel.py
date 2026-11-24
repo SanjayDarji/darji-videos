@@ -24,6 +24,16 @@ WHITE = (245, 247, 250); MUTED = (148, 163, 184); GOLD = (245, 190, 55)
 GREEN = (34, 197, 94); RED = (239, 68, 68); CARD = (22, 31, 58); CARD2 = (32, 45, 84)
 BLUE = (59, 130, 246); ORANGE = (251, 146, 60); DARK = (12, 16, 30)
 
+BG_DELTA = (8, 14, 30)
+PW = (255, 255, 255); SUB_HL = (245, 190, 55); BRANDC = GOLD; SLAB = (40, 40, 62)
+def apply_theme(th):
+    if not th: return
+    g = globals()
+    for k in ("BG", "GOLD", "CARD", "CARD2", "DARK", "BLUE", "ORANGE", "GREEN", "RED", "MUTED", "WHITE", "PW", "SUB_HL", "BRANDC", "SLAB"):
+        if k in th: g[k] = tuple(th[k])
+    if "SER3" in th: g["SER3"] = [tuple(c) for c in th["SER3"]]
+    if "bg_delta" in th: g["BG_DELTA"] = tuple(th["bg_delta"])
+
 _fc = {}
 def F(size, bold=True):
     k = (size, bold)
@@ -47,6 +57,7 @@ REEL = None; SPEC = None; SEG = []; TOTAL = 0.0
 REV = {"hook": [0.0, 0.07], "problem": [0.04], "analogy": [0.04, 0.30, 0.34, 0.62, 0.78],
        "facts": [0.03, 0.27, 0.50, 0.78], "headlines": [0.05, 0.38, 0.66], "baskets": [0.03, 0.21, 0.47, 0.73], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5],
        "chook": [0.0, 0.14], "anatomy": [0.02, 0.26, 0.42, 0.58, 0.75], "gvr": [0.03, 0.5], "patterns": [0.08, 0.33, 0.7], "quiz": [0.0, 0.2, 0.5, 0.72],
+       "isohook": [0.0, 0.2], "isocmp": [0.03, 0.2, 0.4, 0.6], "isobars": [0.03, 0.15], "poll": [0.0, 0.18, 0.5, 0.75],
        "lvhook": [0.0, 0.2], "lvdef": [0.03, 0.5], "lvflip": [0.03], "quiz2": [0.0, 0.2, 0.5, 0.72]}
 
 def _dur(p):
@@ -57,6 +68,7 @@ def load(reel_dir):
     global REEL, SPEC, SEG, TOTAL
     REEL = os.path.abspath(reel_dir)
     SPEC = json.load(open(os.path.join(REEL, "spec.json"), encoding="utf-8"))
+    apply_theme(SPEC.get("theme"))
     tempo = SPEC.get("voice_tempo", 1.0); lead = SPEC.get("lead", 0.12); pad = SPEC.get("pad", 0.15)
     t = 0.0; SEG = []
     for i, sc in enumerate(SPEC["scenes"]):
@@ -117,7 +129,7 @@ def base_bg():
     if "bg" not in _assets:
         arr = np.zeros((H, W, 3), np.uint8)
         t = (np.arange(H) / H)[:, None]
-        arr[..., 0] = (10 + 8 * t); arr[..., 1] = (15 + 14 * t); arr[..., 2] = (31 + 30 * t)
+        arr[..., 0] = (BG[0] + BG_DELTA[0] * t); arr[..., 1] = (BG[1] + BG_DELTA[1] * t); arr[..., 2] = (BG[2] + BG_DELTA[2] * t)
         _assets["bg"] = Image.fromarray(arr, "RGB")
     return _assets["bg"]
 
@@ -161,7 +173,8 @@ def layout_marked(s, size, maxw, bold=True):
     if cur: lines.append((cur, cw))
     return lines
 
-def marked(d, cx, cy, s, size, maxw, color=WHITE, hl=GOLD, lh=1.32, a=1.0, bold=True):
+def marked(d, cx, cy, s, size, maxw, color=None, hl=None, lh=1.32, a=1.0, bold=True):
+    color = color or WHITE; hl = hl or GOLD
     f = F(size, bold); lines = layout_marked(s, size, maxw, bold)
     y = cy - (len(lines) - 1) * size * lh / 2
     for ln, wid in lines:
@@ -326,7 +339,7 @@ def sc_outro(im, d, lt, dur, sc):
     av = avatar(150)
     s = 0.85 + 0.15 * e; av = av.resize((int(av.width * s), int(av.height * s)), Image.BICUBIC)
     im.paste(av, (CX - av.width // 2, 590 - av.height // 2), av)
-    text(d, CX, 835, SPEC["brand"], 96, GOLD, a=clamp(e * 1.5))
+    text(d, CX, 835, SPEC["brand"], 96, BRANDC, a=clamp(e * 1.5))
     text(d, CX, 912, sc["tag"], 34, MUTED, bold=False, a=clamp(e * 1.5))
     for k, nm in enumerate(sc["cta"]):
         ee = eb(prog(lt, T[0] + .5 + k * .2, .4))
@@ -653,13 +666,192 @@ def sc_quiz2(im, d, lt, dur, sc):
 
 SCENES.update(lvhook=sc_lvhook, lvdef=sc_lvdef, lvflip=sc_lvflip, quiz2=sc_quiz2)
 
+
+# ---------------------------------------------------------------- 3D-style scenes (real perspective projection of boxes)
+SER3 = [(57, 135, 229), (217, 89, 38), (25, 158, 112)]   # validated dark categorical slots 1-3 (dataviz palette)
+PILE = [(57, 135, 229), (217, 89, 38), (25, 158, 112), (144, 133, 233), (213, 81, 129), (201, 133, 0), (110, 120, 140)]
+
+def shade(col, f): return tuple(max(0, min(255, int(c * f))) for c in col)
+
+def box3d(d, xc, y0, zc, w, h, dp, col, th, ox, oy, sc, el, a=1.0):
+    ct, st = math.cos(th), math.sin(th); cf, sf = math.sqrt(1 - el * el), el
+    def P(X, Y, Z):
+        xr = X * ct + Z * st; zr = -X * st + Z * ct
+        return (ox + xr * sc, oy - (Y * cf + zr * sf) * sc)
+    x0, x1 = xc - w / 2, xc + w / 2; z0, z1 = zc - dp / 2, zc + dp / 2; y1 = y0 + h
+    faces = [((0, 0, -1), [(x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0)]),
+             ((0, 0, 1), [(x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)]),
+             ((-1, 0, 0), [(x0, y0, z0), (x0, y0, z1), (x0, y1, z1), (x0, y1, z0)]),
+             ((1, 0, 0), [(x1, y0, z0), (x1, y0, z1), (x1, y1, z1), (x1, y1, z0)])]
+    for (nx, ny, nz), cs in faces:
+        if -nx * st + nz * ct < 0:
+            light = 0.80 + 0.20 * (-(nx * ct + nz * st))
+            pts = [P(*c) for c in cs]
+            d.polygon(pts, fill=C(shade(col, light), a)); d.line(pts + [pts[0]], fill=C(BG, a), width=2)
+    top = [P(x0, y1, z0), P(x1, y1, z0), P(x1, y1, z1), P(x0, y1, z1)]
+    d.polygon(top, fill=C(shade(col, 1.18), a)); d.line(top + [top[0]], fill=C(BG, a), width=2)
+    return P
+
+def cube_pile(d, th, ox, oy, sc, k=lambda i: 1.0, a=1.0, size=70, gap=4):
+    pos = []
+    for j in range(3):
+        for i in range(3): pos.append(((i - 1) * (size + gap), 0, (j - 1) * (size + gap)))
+    for j in range(2):
+        for i in range(2): pos.append(((i - .5) * (size + gap), size + gap, (j - .5) * (size + gap)))
+    pos.append((0, 2 * (size + gap), 0))
+    ct, st = math.cos(th), math.sin(th); items = []
+    for idx, (X, Y, Z) in enumerate(pos):
+        e = k(idx)
+        if e <= .02: continue
+        items.append((-X * st + Z * ct, Y, idx, X, Y, Z, e))
+    for zr, _, idx, X, Y, Z, e in sorted(items, key=lambda t: (-t[0], t[1])):
+        s2 = clamp(e * 1.15, 0, 1.06)
+        box3d(d, X, Y + (1 - clamp(e)) * 160, Z, size * s2, size * s2, size * s2, PILE[idx % len(PILE)], th, ox, oy, sc, 0.5, clamp(e * 3) * a)
+
+def sc_isohook(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    e1 = eb(prog(lt, T[0], .4)); e2 = eb(prog(lt, T[1], .45))
+    text(d, CX, 440 + slide(e1), sc["line1"], int(sc.get("size1", 60) * (0.85 + 0.15 * e1)), WHITE, a=clamp(e1 * 2))
+    text(d, CX, 556 + slide(e2, 60), sc["line2"], int(sc.get("size2", 96) * (0.8 + 0.2 * e2)), GOLD, a=clamp(e2 * 2))
+    ce = eo(prog(lt, 0.1, .5))
+    rrect(d, [90, 650, 930, 1185], 34, CARD, CARD2, 2, clamp(ce * 2))
+    cube_pile(d, 0.6 + lt * 0.55, CX, 1110, 1.45, lambda i: eb(prog(lt, .5 + i * .14, .42)))
+    for k, ch in enumerate(sc.get("chips", [])):
+        ct0 = sc.get('chip_t', [1.6, 2.1])[k] if k < len(sc.get('chip_t', [1.6, 2.1])) else 1.6 + k * .5
+        e = eb(prog(lt, ct0, .45)); a = clamp(e * 2.2)
+        if e <= .1: continue
+        x0 = 105 if k == 0 else 635
+        rrect(d, [x0, 800 + k * 40 + slide(e), x0 + 280, 872 + k * 40 + slide(e)], 36, CARD2, GOLD, 3, a)
+        text(d, x0 + 140, 836 + k * 40 + slide(e), ch, 34, WHITE, a=a)
+    text(d, CX, 1218, sc.get("note", ""), 24, MUTED, bold=False, a=clamp(ce))
+
+def sc_isocmp(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    be = eo(prog(lt, T[0], .5)); a0 = clamp(be * 2)
+    rrect(d, [90, 420, 930, 1215], 34, CARD, CARD2, 2, a0)
+    bb = eo(prog(lt, T[1], .5))
+    if be > .05:
+        text(d, CX, 640, sc["col_name"], 26, WHITE, a=a0)
+        va = clamp(1 - bb * 2.5) * a0
+        if va > .02 and sc.get("vs"):
+            for k, nm in enumerate(sc["vs"]):
+                x0 = 120 if k == 0 else 540
+                rrect(d, [x0, 470, x0 + 360, 570], 40, CARD2, SER3[0] if k == 0 else SER3[1], 4, va)
+                text(d, x0 + 180, 520, nm, 34, WHITE, a=va)
+            text(d, CX, 520, "vs", 30, MUTED, bold=False, a=va)
+    if bb > .05:
+        val = sc["badge"] * eo(prog(lt, T[1] + .05, 1.0))
+        text(d, CX, 500, f"{val:.0f}%", 132, GOLD, a=clamp(bb * 2))
+        text(d, CX, 592, sc["badge_cap"], 27, MUTED, bold=False, a=clamp(bb * 2))
+    th = 0.5 + 0.34 * math.sin(lt * 0.8); ox, oy, scl, el = 510, 1010, 1.0, 0.5; PXP = 3.0
+    box3d(d, 0, -14, 0, 440, 14, 250, SLAB, th, ox, oy, scl, el, a=a0)
+    g1 = eo(prog(lt, T[1], .9)); g2 = eo(prog(lt, T[1] + .45, .9))
+    v1, v2 = sc["badge"], 100 - sc["badge"]
+    h1 = v1 * PXP * g1; h2 = v2 * PXP * g2
+    if h1 > 1: box3d(d, 0, 0, 0, 170, h1, 170, SER3[0], th, ox, oy, scl, el)
+    if h2 > 1: box3d(d, 0, v1 * PXP * g1, 0, 170, h2, 170, (72, 78, 108), th, ox, oy, scl, el)
+    ct, st = math.cos(th), math.sin(th); cf, sf = math.sqrt(1 - el * el), el
+    def P(X, Y, Z):
+        xr = X * ct + Z * st; zr = -X * st + Z * ct
+        return (ox + xr * scl, oy - (Y * cf + zr * sf) * scl)
+    le = eo(prog(lt, T[2], .5)); a = clamp(le * 2)
+    if le > .05:
+        for (nm, val, ymid, col, lx, anc) in ((sc["seg1"], v1, v1 / 2, SER3[0], 124, "lm"), (sc["seg2"], v2, v1 + v2 / 2, (72, 78, 108), 896, "rm")):
+            px, py2 = P(0, ymid * PXP, 0)
+            d.rectangle([lx - 12 if anc == "lm" else lx + 4, py2 - 9, lx - 4 if anc == "lm" else lx + 12, py2 + 9], fill=C(col, a))
+            text(d, lx + (4 if anc == "lm" else -4), py2 - 18, f"{val:.0f}%", 40, WHITE, anchor=anc, a=a)
+            text(d, lx + (4 if anc == "lm" else -4), py2 + 22, nm, 24, MUTED, anchor=anc, bold=False, a=a)
+            ex = 124 + 230 if anc == "lm" else 896 - 230
+            d.line([(ex, py2), (px, py2)], fill=C(col, a * .9), width=3)
+            d.ellipse([px - 7, py2 - 7, px + 7, py2 + 7], fill=C(WHITE, a))
+    ce = eb(prog(lt, T[3], .5))
+    if ce > .08:
+        ac = clamp(ce * 2.2)
+        text(d, CX, 1110, sc.get("chips_head", ""), 24, MUTED, bold=False, a=ac)
+        for k, ch in enumerate(sc.get("chips", [])):
+            e = eb(prog(lt, T[3] + k * .55, .4)); aa = clamp(e * 2.2)
+            if e <= .08: continue
+            x0 = 100 + k * 275
+            rrect(d, [x0, 1132 + slide(e), x0 + 255, 1204 + slide(e)], 26, CARD2, SER3[k], 3, aa)
+            nm, sb = (ch if isinstance(ch, (list, tuple)) else (ch, ""))
+            text(d, x0 + 127, 1156 + slide(e), nm, 27, WHITE, a=aa)
+            if sb: text(d, x0 + 127, 1185 + slide(e), sb, 22, MUTED, bold=False, a=aa)
+    text(d, CX, 1236, sc.get("note", ""), 22, MUTED, bold=False, a=clamp(be))
+
+def obl_box(d, x, y, w, h, dx, dy, col, a=1.0):
+    d.polygon([(x + w, y), (x + w + dx, y - dy), (x + w + dx, y + h - dy), (x + w, y + h)], fill=C(shade(col, .62), a))
+    d.polygon([(x, y), (x + dx, y - dy), (x + w + dx, y - dy), (x + w, y)], fill=C(shade(col, 1.2), a))
+    d.rectangle([x, y, x + w, y + h], fill=C(col, a))
+
+def sc_isobars(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    be = eo(prog(lt, T[0], .5)); a = clamp(be * 2.2)
+    rrect(d, [90, 420, 930, 1215], 34, CARD, CARD2, 2, clamp(be * 2))
+    text(d, CX, 478, sc["title"], 32, GOLD, a=a)
+    if sc.get("sub"): text(d, CX, 520, sc["sub"], 24, MUTED, bold=False, a=a)
+    mx = max(v for _, v in sc["rows"]); L = 290; step = sc.get("step", 100); hl = sc.get("hl")
+    for i, (nm, v) in enumerate(sc["rows"]):
+        g = eo(prog(lt, T[1] + i * .2, .7)); y = 575 + i * step
+        if g <= .02: continue
+        col = SER3[0] if (hl is None or i in hl) else (72, 78, 108)
+        text(d, 110, y + 30, nm, 27, WHITE if col == SER3[0] else MUTED, anchor="lm", a=clamp(g * 3))
+        w = max(10, int(v / mx * L * g))
+        obl_box(d, 440, y, w, 60, 24, 14, col, clamp(g * 3))
+        text(d, 440 + w + 42, y + 30, sc.get("fmt", "{:.0f}%").format(v * g), 29, WHITE, anchor="lm", a=clamp(g * 3))
+    text(d, CX, 1236, sc.get("note", ""), 22, MUTED, bold=False, a=clamp(be))
+
+def sc_poll(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    e = eo(prog(lt, T[0], .5))
+    if e > .12:
+        a = clamp(e * 2.2)
+        rrect(d, [90, 400 + slide(e), 930, 470 + slide(e)], 35, GOLD, None, 0, a)
+        text(d, CX, 435 + slide(e), sc["head"], 36, DARK, a=a)
+        marked(d, CX, 585, sc["q"], 54, 820, a=a)
+    for k, (lab, txt) in enumerate(sc["opts"]):
+        ot = (sc.get('opt_rev') or [T[1] / dur + k * .35 / dur for k in range(3)])[k] * dur if sc.get('opt_rev') else T[1] + k * .35
+        e = eb(prog(lt, ot, .45)); a = clamp(e * 2.2)
+        if e <= .1: continue
+        y0 = 700 + k * 135 + slide(e)
+        rrect(d, [90, y0, 930, y0 + 108], 30, CARD, SER3[k], 4, a)
+        obl_box(d, 118, y0 + 24, 60, 60, 16, 10, SER3[k], a)
+        text(d, 148, y0 + 56, lab, 40, PW, a=a)
+        text(d, 250, y0 + 54, txt, 44, WHITE, anchor="lm", a=a)
+    e = eb(prog(lt, T[3], .5))
+    if e > .12:
+        s = 1 + 0.04 * math.sin(lt * 6)
+        text(d, CX, 1160, sc["ask"], int(46 * s), GOLD, a=clamp(e * 2))
+        text(d, CX, 1225, sc.get("note", ""), 24, MUTED, bold=False, a=clamp(e))
+
+SCENES.update(isohook=sc_isohook, isocmp=sc_isocmp, isobars=sc_isobars, poll=sc_poll)
+
+def cover_s2(path):
+    cv = SPEC["cover"]
+    im = base_bg().copy(); g = glow_mask(1100)
+    im.paste(Image.new("RGB", g.size, GOLD), (800 - 550, 1180 - 550), g.point(lambda v: int(v * 0.30)))
+    im.paste(Image.new("RGB", g.size, BLUE), (150 - 550, 380 - 550), g.point(lambda v: int(v * 0.20)))
+    d = ImageDraw.Draw(im)
+    cube_pile(d, 0.65, 215, 1530, 1.25); cube_pile(d, -0.45, 880, 1480, 0.95)
+    rrect(d, [100, 290, 690, 360], 35, CARD, GOLD, 3)
+    text(d, 395, 325, cv["pill"], 34, GOLD)
+    text(d, 100, 540, cv["l1"], cv.get("s1", 190), WHITE, anchor="lm")
+    text(d, 100, 720, cv["l2"], cv.get("s2", 130), GOLD, anchor="lm")
+    text(d, 100, 860, cv["sub"], 46, MUTED, anchor="lm")
+    paste_card(im, face_card(520, 566), 600, 1220, yaw=-0.32, scale=1.0)
+    d = ImageDraw.Draw(im)
+    text(d, 100, 1755, SPEC["brand"], 70, GOLD, anchor="lm")
+    d.rectangle([100, 1800, 460, 1806], fill=GOLD)
+    im.save(path, quality=93)
+
 # ---------------------------------------------------------------- chrome + subtitles
 def chrome(im, d, t):
     av = avatar(46); im.paste(av, (90, 262), av)
-    text(d, 206, 292, SPEC["brand"], 46, GOLD, anchor="lm")
+    text(d, 206, 292, SPEC["brand"], 46, BRANDC, anchor="lm")
     text(d, 206, 338, SPEC.get("tagline", ""), 25, MUTED, bold=False, anchor="lm")
-    rrect(d, [690, 276, 930, 326], 25, CARD, GOLD, 2)
-    text(d, 810, 301, SPEC.get("day_tag", ""), 24, GOLD)
+    tag = SPEC.get("day_tag", "")
+    pw = max(240, int(d.textlength(tag, font=F(24))) + 54)
+    rrect(d, [930 - pw, 276, 930, 326], 25, CARD, GOLD, 2)
+    text(d, 930 - pw // 2, 301, tag, 24, GOLD)
 
 def subtitle(im, d, i, lt):
     sc = SPEC["scenes"][i]; seg = SEG[i]
@@ -677,7 +869,7 @@ def subtitle(im, d, i, lt):
     n = len(layout_marked(subs[idx], size, 800))
     ph = int(n * size * 1.32 + 44); cy = 1350
     rrect(d, [90, cy - ph // 2, 930, cy + ph // 2], 30, DARK, CARD2, 2)
-    marked(d, CX, cy, subs[idx], size, 800)
+    marked(d, CX, cy, subs[idx], size, 800, color=PW, hl=SUB_HL)
 
 # ---------------------------------------------------------------- frame
 TR = 0.32
@@ -794,8 +986,291 @@ def build_audio(out_path):
     subprocess.check_call(["ffmpeg", "-y", "-loglevel", "error"] + ins + ["-filter_complex", fc, "-map", "[out]", "-ac", "1", out_path])
 
 # ---------------------------------------------------------------- cover
+
+def extruded(im, cx, cy, s, size, depth, top, bot, side, glow=None):
+    from PIL import ImageFilter
+    mask = Image.new("L", (W, H), 0); ImageDraw.Draw(mask).text((cx, cy), s, font=F(size, True), fill=255, anchor="mm", language="hi")
+    if glow:
+        gl = mask.filter(ImageFilter.GaussianBlur(46)).point(lambda v: int(v * 0.55))
+        im.paste(Image.new("RGB", (W, H), glow), (0, 0), gl)
+    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(layer)
+    for i in range(depth, 0, -1):
+        col = shade(side, 0.38 + 0.62 * (1 - i / depth))
+        ld.text((cx + i * 1.15, cy + i * 1.15), s, font=F(size, True), fill=col + (255,), anchor="mm", language="hi")
+    grad = np.zeros((H, W, 3), np.uint8); y0, y1 = cy - size * .5, cy + size * .5
+    t = np.clip((np.arange(H) - y0) / (y1 - y0), 0, 1)[:, None]
+    for k in range(3): grad[..., k] = (top[k] + (bot[k] - top[k]) * t).astype(np.uint8)
+    layer.paste(Image.fromarray(grad, "RGB"), (0, 0), mask)
+    im.paste(layer.convert("RGB"), (0, 0), layer.split()[3])
+
+def cover_s3(path):
+    cv = SPEC["cover"]; CORAL = (255, 82, 102)
+    im = base_bg().copy()
+    for (gx, gy, gs, col, al) in ((540, 760, 1500, (110, 70, 255), .42), (880, 1520, 900, (255, 82, 102), .16), (150, 1450, 800, (80, 90, 235), .22)):
+        g = glow_mask(gs); im.paste(Image.new("RGB", g.size, col), (gx - gs // 2, gy - gs // 2), g.point(lambda v, al=al: int(v * al)))
+    d = ImageDraw.Draw(im)
+    # perspective floor grid
+    vx, vy = 540, 1180
+    for k in range(-14, 15):
+        d.line([(vx + k * 18, vy), (vx + k * 190, 1920)], fill=C((120, 90, 255), .20), width=2)
+    for j in range(1, 11):
+        y = vy + 740 * (j / 10) ** 2.1
+        d.line([(0, y), (W, y)], fill=C((120, 90, 255), .10 + .16 * j / 10), width=2)
+    # floating cubes
+    for (X, Y, sz, col, th) in ((120, 700, 96, PILE[1], .6), (965, 640, 84, PILE[2], -.5), (95, 1085, 70, PILE[3], .8), (985, 1010, 100, PILE[0], -.7)):
+        box3d(d, 0, 0, 0, sz, sz, sz, col, th, X, Y, 1.0, .5)
+    # hero number
+    extruded(im, 540, 728, cv["hero"], cv.get("hs", 430), 44, (255, 255, 255), (186, 160, 255), (92, 60, 230), glow=(120, 80, 255))
+    d = ImageDraw.Draw(im)
+    text(d, CX, 1000, cv["cap"], 56, WHITE)
+    text(d, CX, 1062, cv["src"], 28, MUTED, bold=False)
+    # stamp
+    st = Image.new("RGBA", (980, 230), (0, 0, 0, 0)); sd = ImageDraw.Draw(st)
+    sd.rounded_rectangle([10, 10, 970, 220], 36, outline=CORAL + (255,), width=9)
+    sd.rounded_rectangle([30, 30, 950, 200], 26, outline=CORAL + (190,), width=3)
+    sd.text((490, 108), cv["stamp"], font=F(104, True), fill=CORAL + (255,), anchor="mm")
+    st = st.rotate(7, expand=True, resample=Image.BICUBIC)
+    im.paste(st.convert("RGB"), (540 - st.width // 2, 335 - st.height // 2), st.split()[3])
+    d = ImageDraw.Draw(im)
+    # question
+    text(d, CX, 1160, cv["q1"], 92, WHITE)
+    text(d, CX, 1268, cv["q2"], 108, GOLD)
+    # 3D column (43 / 57)
+    th = 0.62; ox, oy = 805, 1668; P = 2.2
+    box3d(d, 0, -12, 0, 300, 12, 190, (40, 40, 62), th, ox, oy, 1.0, .5)
+    box3d(d, 0, 0, 0, 130, 43 * P, 130, SER3[0], th, ox, oy, 1.0, .5)
+    box3d(d, 0, 43 * P, 0, 130, 57 * P, 130, (84, 90, 124), th, ox, oy, 1.0, .5)
+    # face disc with neon ring
+    r = 172; fx, fy = 290, 1548
+    g = glow_mask(2 * r + 330); im.paste(Image.new("RGB", g.size, (130, 90, 255)), (fx - g.size[0] // 2, fy - g.size[1] // 2), g.point(lambda v: int(v * .55)))
+    d = ImageDraw.Draw(im)
+    d.ellipse([fx - r - 18, fy - r - 18, fx + r + 18, fy + r + 18], fill=GOLD)
+    d.ellipse([fx - r - 7, fy - r - 7, fx + r + 7, fy + r + 7], fill=DARK)
+    src = face_img().crop((95, 60, 385, 350)).resize((2 * r, 2 * r), Image.LANCZOS)
+    m = Image.new("L", (2 * r, 2 * r), 0); ImageDraw.Draw(m).ellipse([0, 0, 2 * r - 1, 2 * r - 1], fill=255)
+    im.paste(src, (fx - r, fy - r), m)
+    d = ImageDraw.Draw(im)
+    rrect(d, [fx - 175, fy + r - 30, fx + 175, fy + r + 38], 34, GOLD, None, 0)
+    text(d, fx, fy + r + 4, SPEC["brand"], 40, DARK)
+    text(d, CX, 1842, cv.get("foot", "शैक्षणिक जानकारी · निवेश सलाह नहीं"), 28, MUTED, bold=False)
+    im.save(path, quality=94)
+
+
+ANTON = "/usr/share/fonts/truetype/google-fonts/ofl/anton/Anton-Regular.ttf"
+POPB = "/usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf"
+
+def person_cutout():
+    """GrabCut person cutout of the face photo -> RGBA (face pixels untouched)."""
+    import cv2
+    rgb = np.array(face_img().convert("RGB")); im = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR); h, w = im.shape[:2]
+    m = np.full((h, w), cv2.GC_PR_BGD, np.uint8)
+    cv2.rectangle(m, (60, 300), (w - 40, h), cv2.GC_PR_FGD, -1)
+    cv2.ellipse(m, (250, 210), (115, 150), 0, 0, 360, cv2.GC_PR_FGD, -1)
+    cv2.ellipse(m, (250, 230), (70, 100), 0, 0, 360, cv2.GC_FGD, -1)
+    cv2.rectangle(m, (170, 380), (340, h), cv2.GC_FGD, -1)
+    cv2.rectangle(m, (0, 0), (w, 40), cv2.GC_BGD, -1); cv2.rectangle(m, (0, 0), (55, 260), cv2.GC_BGD, -1)
+    cv2.rectangle(m, (w - 45, 0), (w, 300), cv2.GC_BGD, -1)
+    cv2.rectangle(m, (95, 150), (166, 300), cv2.GC_BGD, -1); cv2.fillPoly(m, [np.array([(314, 150), (w, 150), (w, 336), (380, 332), (332, 318), (304, 290), (293, 262), (293, 241), (314, 241)], np.int32)], cv2.GC_BGD)
+    cv2.rectangle(m, (150, 241), (190, 282), cv2.GC_BGD, -1)
+    cv2.grabCut(im, m, None, np.zeros((1, 65)), np.zeros((1, 65)), 8, cv2.GC_INIT_WITH_MASK)
+    a = ((m == cv2.GC_FGD) | (m == cv2.GC_PR_FGD)).astype(np.uint8) * 255
+    r_, g_, b_ = [rgb[..., i].astype(int) for i in range(3)]
+    teal = ((g_ - r_) > 26) & ((b_ - r_) > 36); teal[300:] = False
+    teal = cv2.dilate(teal.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool); teal[300:] = False
+    a[teal] = 0
+    a = cv2.morphologyEx(a, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8)); a = cv2.morphologyEx(a, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(a)
+    if n > 1: a = ((lab == 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])) * 255).astype(np.uint8)
+    a = cv2.erode(a, np.ones((3, 3), np.uint8))
+    out = Image.fromarray(rgb).convert("RGBA"); out.putalpha(Image.fromarray(a))
+    return out
+
+def dilate_L(mask, px):
+    import cv2
+    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * px + 1, 2 * px + 1))
+    return Image.fromarray(cv2.dilate(np.array(mask), k))
+
+def sticker(im, layer_rgba, pos, outline=16, shadow=(14, 16), ol=(255, 255, 255), sh=(12, 12, 12)):
+    """paste an RGBA layer (full-canvas coords via pos) with white sticker outline + hard black shadow"""
+    lw, lh = layer_rgba.size; cv = Image.new("RGBA", (W, H), (0, 0, 0, 0)); cv.paste(layer_rgba, pos, layer_rgba)
+    a = cv.split()[3]; big = dilate_L(a, outline).filter(__import__("PIL.ImageFilter", fromlist=["x"]).GaussianBlur(1.2))
+    shm = Image.new("L", (W, H), 0); shm.paste(big, shadow, big)
+    im.paste(Image.new("RGB", (W, H), sh), (0, 0), shm)
+    im.paste(Image.new("RGB", (W, H), ol), (0, 0), big)
+    im.paste(cv.convert("RGB"), (0, 0), a)
+
+def cover_s4(path):
+    cv = SPEC["cover"]; YEL = (255, 221, 0); BLK = (14, 14, 14); RED = (255, 52, 52)
+    yy, xx = np.mgrid[0:H, 0:W]; dist = np.sqrt(((xx - 540) / 700.0) ** 2 + ((yy - 760) / 900.0) ** 2); dist = np.clip(dist, 0, 1.2)
+    arr = np.zeros((H, W, 3), np.float32)
+    for k, (c0, c1) in enumerate(zip((255, 240, 70), (255, 196, 0))): arr[..., k] = c0 + (c1 - c0) * np.clip(dist, 0, 1)
+    im = Image.fromarray(arr.astype(np.uint8), "RGB"); d = ImageDraw.Draw(im)
+    for gy in range(0, H + 40, 46):                       # halftone dots, strongest bottom-left and top-right
+        for gx in range(0, W + 40, 46):
+            f = max(0.0, 1 - math.hypot(gx - 0, gy - 1920) / 900) + max(0.0, 1 - math.hypot(gx - 1080, gy - 0) / 700)
+            r = 17 * min(1.0, f)
+            if r > 1.5: d.ellipse([gx - r, gy - r, gx + r, gy + r], fill=(255, 190, 0))
+    # hero number, fitted to width
+    hs = 640; hero = cv["hero"]
+    while ImageDraw.Draw(Image.new("L", (10, 10))).textlength(hero, font=ImageFont.truetype(ANTON, hs)) > 900: hs -= 10
+    fh = ImageFont.truetype(ANTON, hs)
+    tw = d.textlength(hero, font=fh)
+    hm = Image.new("RGBA", (W, H), (0, 0, 0, 0)); hd = ImageDraw.Draw(hm)
+    xl = 540 - tw / 2; cy = 700
+    pct_x = xl + d.textlength(hero[:-1], font=fh)
+    hd.text((xl, cy), hero[:-1], font=fh, fill=BLK + (255,), anchor="lm")
+    hd.text((pct_x, cy), hero[-1], font=fh, fill=RED + (255,), anchor="lm")
+    sticker(im, hm, (0, 0), outline=20, shadow=(16, 20))
+    d = ImageDraw.Draw(im)
+    # top tag (black pill, tilted) and alert dot
+    tg = Image.new("RGBA", (760, 120), (0, 0, 0, 0)); td = ImageDraw.Draw(tg)
+    td.rounded_rectangle([0, 10, 750, 110], 50, fill=BLK + (255,))
+    td.text((375, 62), cv["tag"], font=ImageFont.truetype(ANTON, 58), fill=YEL + (255,), anchor="mm")
+    tg = tg.rotate(4, expand=True, resample=Image.BICUBIC); im.paste(tg.convert("RGB"), (70, 300), tg.split()[3])
+    d = ImageDraw.Draw(im); d.ellipse([890, 310, 990, 410], fill=RED, outline=BLK, width=7)
+    d.text((940, 362), "!", font=ImageFont.truetype(ANTON, 86), fill=WHITE, anchor="mm")
+    # headline
+    f1 = ImageFont.truetype(POPB, 128); f2 = ImageFont.truetype(POPB, 150)
+    d.text((86, 1040), cv["l1"], font=f1, fill=BLK, anchor="lm", language="hi")
+    mk = Image.new("RGBA", (W, 260), (0, 0, 0, 0)); md = ImageDraw.Draw(mk)
+    t2w = d.textlength(cv["l2"], font=f2, language="hi")
+    rnd = [3, -4, 5, -2, 4, -3]
+    md.polygon([(60 + rnd[0], 30 + rnd[1]), (110 + t2w + rnd[2], 22 + rnd[3]), (118 + t2w + rnd[4], 214 + rnd[5]), (52 + rnd[1], 226 + rnd[2])], fill=RED + (255,))
+    md.text((86, 126), cv["l2"], font=f2, fill=WHITE + (255,), anchor="lm", language="hi")
+    mk = mk.rotate(-3, expand=False, resample=Image.BICUBIC)
+    sh2 = Image.new("RGBA", (W, 260), (0, 0, 0, 0)); sh2.paste(Image.new("RGBA", (W, 260), BLK + (255,)), (10, 12), mk.split()[3])
+    im.paste(sh2.convert("RGB"), (0, 1100), sh2.split()[3]); im.paste(mk.convert("RGB"), (0, 1100), mk.split()[3])
+    d = ImageDraw.Draw(im)
+    rrect(d, [86, 1368, 86 + int(d.textlength(cv["src"], font=F(30), language="hi")) + 44, 1428], 30, WHITE, BLK, 4)
+    d.text((108, 1398), cv["src"], font=F(30), fill=BLK, anchor="lm", language="hi")
+    d.text((92, 1470), cv.get("chips_head", ""), font=F(30), fill=BLK, anchor="lm", language="hi")
+    for k, ch in enumerate(cv.get("chips", [])):
+        cw = int(d.textlength(ch, font=ImageFont.truetype(POPB, 34))) + 44; y0 = 1495 + k * 56
+        rrect(d, [90, y0, 90 + cw, y0 + 46], 23, WHITE, BLK, 4)
+        d.text((90 + cw // 2, y0 + 23), ch, font=ImageFont.truetype(POPB, 34), fill=BLK, anchor="mm")
+    # face sticker
+    pc = person_cutout(); fw = 760; fh2 = int(pc.height * fw / pc.width)
+    pc = pc.resize((fw, fh2), Image.LANCZOS); pc = pc.rotate(3, expand=True, resample=Image.BICUBIC)
+    sticker(im, pc, (470, 1236), outline=18, shadow=(14, 16))
+    d = ImageDraw.Draw(im)
+    # brand ribbon
+    bw = int(d.textlength(SPEC["brand"], font=ImageFont.truetype(ANTON, 62))) + 70
+    br = Image.new("RGBA", (bw, 110), (0, 0, 0, 0)); bd = ImageDraw.Draw(br)
+    bd.rounded_rectangle([0, 8, bw - 6, 100], 22, fill=BLK + (255,)); bd.text((bw // 2 - 3, 56), SPEC["brand"], font=ImageFont.truetype(ANTON, 62), fill=YEL + (255,), anchor="mm")
+    br = br.rotate(3, expand=True, resample=Image.BICUBIC); im.paste(br.convert("RGB"), (50, 1688), br.split()[3])
+    d = ImageDraw.Draw(im); d.text((60, 1830), cv.get("foot", "शैक्षणिक जानकारी · निवेश सलाह नहीं"), font=F(30, False), fill=BLK, anchor="lm", language="hi")
+    im.save(path, quality=94)
+
+
+LORA = "/usr/share/fonts/truetype/google-fonts/Lora-Variable.ttf"
+def SER(size):
+    f = ImageFont.truetype(LORA, size)
+    try: f.set_variation_by_axes([700])
+    except Exception: pass
+    return f
+
+def fit_size(d, txt, font_fn, maxw, start=230, lang=None):
+    sz = start
+    while sz > 40 and d.textlength(txt, font=font_fn(sz), **({"language": lang} if lang else {})) > maxw: sz -= 4
+    return sz
+
+def venn_layer(r, dist, scale=3):
+    """RGBA layer with two overlapping circles (navy / gold) and a darker lens; returns (img, lens_center_xy, left_c, right_c)"""
+    from PIL import ImageFilter
+    Wd, Hd = int((2 * r + dist) + 40), int(2 * r + 40); S = scale
+    cL = (20 + r, 20 + r); cR = (20 + r + dist, 20 + r)
+    def circ(c):
+        m = Image.new("L", (Wd * S, Hd * S), 0); ImageDraw.Draw(m).ellipse([(c[0] - r) * S, (c[1] - r) * S, (c[0] + r) * S, (c[1] + r) * S], fill=255); return m
+    mL, mR = circ(cL), circ(cR)
+    lens = Image.fromarray(np.minimum(np.array(mL), np.array(mR)))
+    out = Image.new("RGBA", (Wd * S, Hd * S), (0, 0, 0, 0))
+    out.paste(Image.new("RGBA", out.size, (20, 34, 84, 244)), (0, 0), mL)
+    out.paste(Image.new("RGBA", out.size, (214, 160, 62, 244)), (0, 0), mR)
+    out.paste(Image.new("RGBA", out.size, (112, 74, 40, 255)), (0, 0), lens)
+    od = ImageDraw.Draw(out)
+    for c in (cL, cR): od.ellipse([(c[0] - r) * S, (c[1] - r) * S, (c[0] + r) * S, (c[1] + r) * S], outline=(255, 255, 255, 235), width=5 * S)
+    return out.resize((Wd, Hd), Image.LANCZOS), cL, cR
+
+def cover_s5(path):
+    from PIL import ImageFilter
+    cv = SPEC["cover"]; NAVY = (18, 30, 74); GOLDN = (190, 138, 46); IV0 = (254, 250, 243); IV1 = (243, 232, 212)
+    t = (np.arange(H) / H)[:, None, None]
+    arr = (np.array(IV0, np.float32) * (1 - t) + np.array(IV1, np.float32) * t) * np.ones((H, W, 3), np.float32)
+    im = Image.fromarray(arr.astype(np.uint8), "RGB")
+    g = glow_mask(1300); im.paste(Image.new("RGB", g.size, (255, 226, 150)), (900 - 650, 260 - 650), g.point(lambda v: int(v * .55)))
+    g2 = glow_mask(1000); im.paste(Image.new("RGB", g2.size, (255, 238, 205)), (300 - 500, 1300 - 500), g2.point(lambda v: int(v * .5)))
+    d = ImageDraw.Draw(im)
+    for k, rr in enumerate((340, 470, 600)):      # faint arcs behind the venn
+        d.ellipse([300 - rr, 1390 - rr, 300 + rr, 1390 + rr], outline=(226, 205, 160), width=2)
+    serif = cv.get("serif", True)
+    fnt = SER if serif else (lambda sz: ImageFont.truetype(POPB, sz))
+    lg = None if serif else "hi"
+    kw = {"language": lg} if lg else {}
+    # brand tag
+    d.text((80, 332), SPEC["brand"], font=ImageFont.truetype(POPB, 42), fill=NAVY, anchor="lm")
+    bw = d.textlength(SPEC["brand"], font=ImageFont.truetype(POPB, 42))
+    d.ellipse([80 + bw + 20, 326, 80 + bw + 32, 338], fill=GOLDN)
+    d.text((80 + bw + 48, 332), cv["tag"], font=ImageFont.truetype(POPB, 30), fill=GOLDN, anchor="lm")
+    # headline
+    maxw = 920
+    s1 = fit_size(d, cv["l1"], fnt, maxw, 230, lg); s2 = fit_size(d, cv["l2"], fnt, maxw, 230, lg)
+    sz = min(s1, s2, 176 if serif else 150)
+    d.text((80, 520), cv["l1"], font=fnt(sz), fill=NAVY, anchor="lm", **kw)
+    d.text((80, 520 + int(sz * 1.12)), cv["l2"], font=fnt(sz), fill=GOLDN, anchor="lm", **kw)
+    yb = 520 + int(sz * 1.12) + int(sz * 0.92)
+    if not serif: yb += 26
+    # divider
+    mid = cv["mid"]; mf = SER(50); mw = d.textlength(mid, font=mf)
+    cx0 = 80 + 460
+    d.line([(80, yb), (cx0 - mw / 2 - 26, yb)], fill=GOLDN, width=3); d.line([(cx0 + mw / 2 + 26, yb), (80 + 920, yb)], fill=GOLDN, width=3)
+    d.text((cx0, yb), mid, font=mf, fill=NAVY, anchor="mm")
+    # hindi hook
+    hf = ImageFont.truetype(POPB, 58); y0 = yb + 100
+    for i, (txt, hl) in enumerate(cv["hook"]):
+        x = 80
+        for part, is_hl in hl:
+            d.text((x, y0 + i * 84), part, font=hf, fill=GOLDN if is_hl else NAVY, anchor="lm", language="hi"); x += d.textlength(part, font=hf, language="hi")
+    # venn
+    vl, cL, cR = venn_layer(150, 120)
+    vx, vy = 6, 1290
+    shadow = vl.split()[3].filter(ImageFilter.GaussianBlur(14)).point(lambda v: int(v * .30))
+    im.paste(Image.new("RGB", vl.size, (60, 50, 30)), (vx + 6, vy + 14), shadow)
+    im.paste(vl.convert("RGB"), (vx, vy), vl.split()[3])
+    d = ImageDraw.Draw(im)
+    lx = vx + (cL[0] + cR[0]) / 2; ly = vy + cL[1]
+    d.text((lx, ly - 8), cv["badge"], font=SER(60), fill=WHITE, anchor="mm")
+    d.text((lx, ly + 40), "OVERLAP", font=ImageFont.truetype(POPB, 19), fill=(255, 232, 190), anchor="mm")
+    d.text((vx + cL[0] - 30, vy + 4), cv["va"], font=ImageFont.truetype(POPB, 30), fill=NAVY, anchor="mm")
+    d.text((vx + cR[0] + 30, vy + 4), cv["vb"], font=ImageFont.truetype(POPB, 30), fill=(150, 104, 30), anchor="mm")
+    d.text((80, 1634), cv["src"], font=ImageFont.truetype(POPB, 22), fill=(110, 100, 80), anchor="lm", language="hi")
+    # person (no outline, soft shadow, bleeds off the bottom like a magazine cover)
+    if cv.get("face") == "card":
+        ph_ = face_img().convert("RGB"); cw = 540; ch = int(ph_.height * cw / ph_.width)
+        ph_ = ph_.resize((cw, ch), Image.LANCZOS)
+        pc = Image.new("RGBA", (cw + 24, ch + 24), (0, 0, 0, 0)); pcd = ImageDraw.Draw(pc)
+        pcd.rounded_rectangle([0, 0, cw + 23, ch + 23], 44, fill=(255, 255, 255, 255))
+        mk_ = Image.new("L", (cw, ch), 0); ImageDraw.Draw(mk_).rounded_rectangle([0, 0, cw - 1, ch - 1], 34, fill=255)
+        pc.paste(ph_, (12, 12), mk_)
+        px, py = 498, 1290
+    else:
+        pc = person_cutout(); fw = 770; fh2 = int(pc.height * fw / pc.width); pc = pc.resize((fw, fh2), Image.LANCZOS)
+        a = pc.split()[3].filter(ImageFilter.GaussianBlur(1.1)); pc.putalpha(a)
+        px, py = 400, 1134
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); lay.paste(pc, (px, py), pc)
+    sh = lay.split()[3].filter(ImageFilter.GaussianBlur(26)).point(lambda v: int(v * .30))
+    im.paste(Image.new("RGB", (W, H), (70, 55, 30)), (-14, 8), sh)
+    im.paste(lay.convert("RGB"), (0, 0), lay.split()[3])
+    d = ImageDraw.Draw(im)
+    d.text((80, 1830), "शैक्षणिक जानकारी · निवेश सलाह नहीं", font=ImageFont.truetype(POPB, 23), fill=NAVY, anchor="lm", language="hi")
+    d.text((80, 1866), "We are not SEBI registered", font=ImageFont.truetype(POPB, 22), fill=(110, 100, 80), anchor="lm")
+    im.save(path, quality=94)
+
 def cover(path):
     cv = SPEC["cover"]
+    if cv.get("style") == "s2": return cover_s2(path)
+    if cv.get("style") == "s3": return cover_s3(path)
+    if cv.get("style") == "s4": return cover_s4(path)
+    if cv.get("style") == "s5": return cover_s5(path)
     im = base_bg().copy(); g = glow_mask(1100)
     im.paste(Image.new("RGB", g.size, GOLD), (540 - 550, 1240 - 550), g.point(lambda v: int(v * 0.30)))
     im.paste(Image.new("RGB", g.size, BLUE), (200 - 550, 420 - 550), g.point(lambda v: int(v * 0.16)))
