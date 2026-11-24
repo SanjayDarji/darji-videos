@@ -57,7 +57,7 @@ REEL = None; SPEC = None; SEG = []; TOTAL = 0.0
 REV = {"hook": [0.0, 0.07], "problem": [0.04], "analogy": [0.04, 0.30, 0.34, 0.62, 0.78],
        "facts": [0.03, 0.27, 0.50, 0.78], "headlines": [0.05, 0.38, 0.66], "baskets": [0.03, 0.21, 0.47, 0.73], "lesson": [0.05, 0.38, 0.62], "outro": [0.04, 0.5],
        "chook": [0.0, 0.14], "anatomy": [0.02, 0.26, 0.42, 0.58, 0.75], "gvr": [0.03, 0.5], "patterns": [0.08, 0.33, 0.7], "quiz": [0.0, 0.2, 0.5, 0.72],
-       "isohook": [0.0, 0.2], "isocmp": [0.03, 0.2, 0.4, 0.6], "isobars": [0.03, 0.15], "poll": [0.0, 0.18, 0.5, 0.75],
+       "isohook": [0.0, 0.2], "isosplit": [0.03, 0.12, 0.3, 0.55], "isocmp": [0.03, 0.2, 0.4, 0.6], "isobars": [0.03, 0.15], "poll": [0.0, 0.18, 0.5, 0.75],
        "lvhook": [0.0, 0.2], "lvdef": [0.03, 0.5], "lvflip": [0.03], "quiz2": [0.0, 0.2, 0.5, 0.72]}
 
 def _dur(p):
@@ -791,13 +791,20 @@ def sc_isobars(im, d, lt, dur, sc):
     if sc.get("sub"): text(d, CX, 520, sc["sub"], 24, MUTED, bold=False, a=a)
     mx = max(v for _, v in sc["rows"]); L = 290; step = sc.get("step", 100); hl = sc.get("hl")
     for i, (nm, v) in enumerate(sc["rows"]):
-        g = eo(prog(lt, T[1] + i * .2, .7)); y = 575 + i * step
+        g = eo(prog(lt, T[1] + (sc["offs"][i] if sc.get("offs") else i * sc.get("stag", .2)), .7)); y = 575 + i * step
         if g <= .02: continue
         col = SER3[0] if (hl is None or i in hl) else (72, 78, 108)
         text(d, 110, y + 30, nm, 27, WHITE if col == SER3[0] else MUTED, anchor="lm", a=clamp(g * 3))
         w = max(10, int(v / mx * L * g))
         obl_box(d, 440, y, w, 60, 24, 14, col, clamp(g * 3))
         text(d, 440 + w + 42, y + 30, sc.get("fmt", "{:.0f}%").format(v * g), 29, WHITE, anchor="lm", a=clamp(g * 3))
+    if sc.get("gap") and len(T) > 2:
+        ge = eb(prog(lt, T[2], .5)); ga = clamp(ge * 2.2)
+        if ge > .08:
+            gy = 575 + len(sc["rows"]) * step - 10
+            rrect(d, [150, gy, 870, gy + 150], 36, CARD2, GOLD, 3, ga)
+            text(d, CX, gy + 62 + slide(ge), sc["gap"], int(64 * (0.9 + 0.1 * ge)), GOLD, a=ga)
+            text(d, CX, gy + 118 + slide(ge), sc.get("gap_sub", ""), 24, MUTED, bold=False, a=ga)
     text(d, CX, 1236, sc.get("note", ""), 22, MUTED, bold=False, a=clamp(be))
 
 def sc_poll(im, d, lt, dur, sc):
@@ -823,7 +830,54 @@ def sc_poll(im, d, lt, dur, sc):
         text(d, CX, 1160, sc["ask"], int(46 * s), GOLD, a=clamp(e * 2))
         text(d, CX, 1225, sc.get("note", ""), 24, MUTED, bold=False, a=clamp(e))
 
-SCENES.update(isohook=sc_isohook, isocmp=sc_isocmp, isobars=sc_isobars, poll=sc_poll)
+def sc_isosplit(im, d, lt, dur, sc):
+    T = reveals(sc, dur)
+    be = eo(prog(lt, T[0], .5)); a0 = clamp(be * 2)
+    rrect(d, [90, 420, 930, 1215], 34, CARD, CARD2, 2, a0)
+    text(d, CX, 472, sc["title"], 30, GOLD, a=a0)
+    th = 0.5 + 0.28 * math.sin(lt * 0.8); ox, oy, scl, el = 490, 960, 1.0, 0.5
+    SL = (72, 78, 108); OR = SER3[1]
+    if be > .3:
+        for k, (nm, col) in enumerate(((sc["names"][0], SER3[0]), (sc["names"][1], OR))):
+            cxp = 336 + k * 308
+            rrect(d, [cxp - 130, 505, cxp + 130, 575], 35, CARD2, col, 4, a0)
+            text(d, cxp, 540, nm, 34, WHITE, a=a0)
+    box3d(d, 0, -14, 0, 700, 14, 270, SLAB, th, ox, oy, scl, el, a=a0)
+    g1 = eo(prog(lt, T[1], .9)); g2 = eo(prog(lt, T[2], .6)); g3 = eo(prog(lt, T[2] + .55, .6))
+    PH, FH, CH = 230, 36, 50
+    ct, st = math.cos(th), math.sin(th); cf, sf = math.sqrt(1 - el * el), el
+    def P(X, Y, Z):
+        xr = X * ct + Z * st; zr = -X * st + Z * ct
+        return (ox + xr * scl, oy - (Y * cf + zr * sf) * scl)
+    for X in (-175, 175):
+        if g1 > .02: box3d(d, X, 0, 0, 210, PH * g1, 210, SER3[0], th, ox, oy, scl, el)
+        if g2 > .02: box3d(d, X, PH * g1, 0, 210, FH * g2, 210, SL, th, ox, oy, scl, el)
+    if g3 > .02: box3d(d, 175, PH * g1 + FH * g2, 0, 210, CH * g3, 210, OR, th, ox, oy, scl, el)
+    if g3 > .6:
+        _, py = P(175, PH + FH + CH / 2, 0)
+        for i in range(4):
+            ph = (lt * 0.8 + i * .25) % 1.0
+            cy2 = py + ph * 150; ca = clamp((1 - ph) * 2.2)
+            cx2 = 856 + 10 * math.sin(i * 2.1)
+            d.ellipse([cx2 - 15, cy2 - 15, cx2 + 15, cy2 + 15], fill=C(OR, ca), outline=C(GOLD, ca), width=2)
+            text(d, cx2, cy2, "\u20b9", 20, PW, a=ca)
+        text(d, 858, py + 190, sc.get("coin_cap", ""), 22, WHITE, a=clamp((g3 - .6) * 3))
+    ce = eb(prog(lt, T[3], .5))
+    if ce > .08:
+        ac = clamp(ce * 2.2)
+        text(d, CX, 1110, sc.get("chips_head", ""), 24, MUTED, bold=False, a=ac)
+        cols = [SER3[0], SL, OR]
+        for k, ch in enumerate(sc.get("chips", [])):
+            e = eb(prog(lt, T[3] + k * .5, .4)); aa = clamp(e * 2.2)
+            if e <= .08: continue
+            x0 = 100 + k * 275
+            rrect(d, [x0, 1132 + slide(e), x0 + 255, 1204 + slide(e)], 26, CARD2, cols[k], 3, aa)
+            nm, sb = (ch if isinstance(ch, (list, tuple)) else (ch, ""))
+            text(d, x0 + 127, 1156 + slide(e), nm, 27, WHITE, a=aa)
+            if sb: text(d, x0 + 127, 1185 + slide(e), sb, 22, MUTED, bold=False, a=aa)
+    text(d, CX, 1236, sc.get("note", ""), 22, MUTED, bold=False, a=clamp(be))
+
+SCENES.update(isohook=sc_isohook, isocmp=sc_isocmp, isobars=sc_isobars, poll=sc_poll, isosplit=sc_isosplit)
 
 def cover_s2(path):
     cv = SPEC["cover"]
@@ -1231,15 +1285,15 @@ def cover_s5(path):
         for part, is_hl in hl:
             d.text((x, y0 + i * 84), part, font=hf, fill=GOLDN if is_hl else NAVY, anchor="lm", language="hi"); x += d.textlength(part, font=hf, language="hi")
     # venn
-    vl, cL, cR = venn_layer(150, 120)
+    vl, cL, cR = venn_layer(150, cv.get("venn_dist", 120))
     vx, vy = 6, 1290
     shadow = vl.split()[3].filter(ImageFilter.GaussianBlur(14)).point(lambda v: int(v * .30))
     im.paste(Image.new("RGB", vl.size, (60, 50, 30)), (vx + 6, vy + 14), shadow)
     im.paste(vl.convert("RGB"), (vx, vy), vl.split()[3])
     d = ImageDraw.Draw(im)
     lx = vx + (cL[0] + cR[0]) / 2; ly = vy + cL[1]
-    d.text((lx, ly - 8), cv["badge"], font=SER(60), fill=WHITE, anchor="mm")
-    d.text((lx, ly + 40), "OVERLAP", font=ImageFont.truetype(POPB, 19), fill=(255, 232, 190), anchor="mm")
+    d.text((lx, ly - 8), cv["badge"], font=SER(60), fill=PW, anchor="mm")
+    d.text((lx, ly + 40), cv.get("badge_cap", "OVERLAP"), font=ImageFont.truetype(POPB, 19), fill=(255, 232, 190), anchor="mm")
     d.text((vx + cL[0] - 30, vy + 4), cv["va"], font=ImageFont.truetype(POPB, 30), fill=NAVY, anchor="mm")
     d.text((vx + cR[0] + 30, vy + 4), cv["vb"], font=ImageFont.truetype(POPB, 30), fill=(150, 104, 30), anchor="mm")
     d.text((80, 1634), cv["src"], font=ImageFont.truetype(POPB, 22), fill=(110, 100, 80), anchor="lm", language="hi")
