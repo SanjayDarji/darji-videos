@@ -1330,6 +1330,19 @@ def cover_s5(path):
         d.text((292, 1368), "PEAK BUZZ", font=ImageFont.truetype(POPB, 22), fill=GOLDN, anchor="mm")
         d.text((372, 1585), "LATE MONEY", font=ImageFont.truetype(POPB, 20), fill=NAVY, anchor="mm")
         d.text((gx0 + 30, gy1 - 18), "ILLUSTRATIVE", font=ImageFont.truetype(POPB, 18), fill=(120, 110, 90), anchor="lm")
+    elif cv.get("graphic") == "steps":
+        gx0, gy0, gx1, gy1 = 30, 1296, 470, 1606
+        d.rounded_rectangle([gx0 + 6, gy0 + 12, gx1 + 6, gy1 + 12], 36, fill=(224, 210, 182))
+        d.rounded_rectangle([gx0, gy0, gx1, gy1], 36, fill=(255, 255, 255), outline=(226, 205, 160), width=2)
+        d.text((gx0 + 30, gy0 + 36), cv.get("gtitle", "FIXED vs STEP-UP"), font=ImageFont.truetype(POPB, 24), fill=NAVY, anchor="lm")
+        base = 1538; vals = cv.get("gvals", [49.5, 98.5]); labs = cv.get("glabs", ["FIXED", "+10% / YR"]); mxv = max(vals)
+        for k, (v, lab) in enumerate(zip(vals, labs)):
+            h = int(150 * v / mxv); x0 = 92 + k * 190
+            d.rounded_rectangle([x0, base - h, x0 + 110, base + 10], 14, fill=NAVY if k == 0 else GOLDN)
+            d.rectangle([x0, base - 4, x0 + 110, base + 10], fill=(255, 255, 255)); d.line([(x0, base), (x0 + 110, base)], fill=(226, 205, 160), width=3)
+            d.text((x0 + 55, base - h - 22), cv.get("gfmt", "{:.1f}L").format(v), font=ImageFont.truetype(POPB, 28), fill=NAVY if k == 0 else GOLDN, anchor="mm")
+            d.text((x0 + 55, base + 26), lab, font=ImageFont.truetype(POPB, 20), fill=NAVY, anchor="mm")
+        d.text((gx0 + 30, gy1 - 16), "ILLUSTRATIVE · 20 YRS · 12% ASSUMED", font=ImageFont.truetype(POPB, 15), fill=(120, 110, 90), anchor="lm")
     else:
         vl, cL, cR = venn_layer(150, cv.get("venn_dist", 120))
         vx, vy = 6, 1290
