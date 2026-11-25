@@ -1,0 +1,21 @@
+Stock 40% down hai aur aap soch rahe ho "thoda aur khareed loon, average down ho jayega"? 🤦‍♂️ Stop. Pehle ye math dekho 👇 (Hindi + English)
+
+• The maths: a 40% fall needs a ~67% gain just to break even. 20% गिरा तो +25%, 50% गिरा तो +100%, 80% गिरा तो +400%। The deeper the hole, the longer the climb (हमारी गणना)
+• Illustrative example: ₹100 पर 100 शेयर (₹10,000), शेयर ₹60 पर आया, आपने 100 शेयर और लिए, तो average cost ₹80 और break-even के लिए सिर्फ़ ~33% चाहिए, 67% नहीं। Sounds smart, right?
+• The catch: आपका exposure भी double हो गया (₹10,000 से ₹16,000)। अगर शेयर ₹30 तक गिरे, तो बिना average down के नुक़सान ₹7,000 और average down के बाद ₹10,000। Percentage कम दिखता है (70% बनाम 62.5%), पर rupee loss बड़ा होता है
+• Real historical data point: Yes Bank का all-time high ₹404 (20 अगस्त 2018) था और 13 नवंबर 2026 को भाव करीब ₹17.6, यानी शिखर से करीब 96% नीचे। Cheap दिखना और value होना दो अलग बातें हैं। यह सिर्फ़ ऐतिहासिक डेटा है, किसी स्टॉक की सलाह नहीं
+• Think-before-you-add filter (सलाह नहीं, सोचने का तरीक़ा): अगर यह शेयर आज मेरे पास न होता, तो क्या मैं इसे इसी price पर नए सिरे से खरीदता? पूरा market गिर रहा है या सिर्फ़ यही stock? Market dip और broken business में फ़र्क़ होता है
+
+🗳️ Poll: क्या आपने कभी किसी गिरते stock में average down किया है? A) हाँ, काम आया  B) हाँ, फँस गया  C) कभी नहीं किया। Comment में A, B या C लिखो 👇
+
+📌 Save करो
+📤 Send करो उस दोस्त को जो हर dip पर average down करता है
+➡️ Follow करो @thesdtrader, Reality Check series का अगला episode miss mat karna
+
+Sources: Business Standard (Yes Bank all-time high ₹404 on 20 Aug 2018), Upstox (Yes Bank price ₹17.63 on 13 Nov 2026), recovery-needed maths also explained by Sahi and 5paisa. All other figures are our own illustrative calculations. Yes Bank is a historical price example only, not a recommendation.
+
+⚠️ हम SEBI registered नहीं हैं। यह जानकारी सिर्फ़ educational है, investment advice नहीं। We are not SEBI registered; this is educational only, not investment advice.
+
+Disclaimer: This content is for educational and informational purposes only and does not constitute investment advice, a recommendation, or a buy/sell signal. Stock market investments are subject to market risks. Please do your own research before making any investment decisions.
+
+#RealityCheck #AverageDown #ValueTrap #StockMarketIndia #ShareMarketHindi #StockMarketForBeginners #TheSDTrader

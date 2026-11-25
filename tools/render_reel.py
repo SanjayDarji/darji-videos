@@ -1342,7 +1342,7 @@ def cover_s5(path):
             d.rectangle([x0, base - 4, x0 + 110, base + 10], fill=(255, 255, 255)); d.line([(x0, base), (x0 + 110, base)], fill=(226, 205, 160), width=3)
             d.text((x0 + 55, base - h - 22), cv.get("gfmt", "{:.1f}L").format(v), font=ImageFont.truetype(POPB, 28), fill=NAVY if k == 0 else GOLDN, anchor="mm")
             d.text((x0 + 55, base + 26), lab, font=ImageFont.truetype(POPB, 20), fill=NAVY, anchor="mm")
-        d.text((gx0 + 30, gy1 - 16), "ILLUSTRATIVE · 20 YRS · 12% ASSUMED", font=ImageFont.truetype(POPB, 15), fill=(120, 110, 90), anchor="lm")
+        d.text((gx0 + 30, gy1 - 16), cv.get("gfoot", "ILLUSTRATIVE · 20 YRS · 12% ASSUMED"), font=ImageFont.truetype(POPB, 15), fill=(120, 110, 90), anchor="lm")
     else:
         vl, cL, cR = venn_layer(150, cv.get("venn_dist", 120))
         vx, vy = 6, 1290
