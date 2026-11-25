@@ -1,0 +1,397 @@
+{
+ "brand": "TheSDTrader",
+ "tagline": "Educational · शैक्षणिक जानकारी · Not advice",
+ "face": "assets/face_original.png",
+ "voice_tempo": 1.14,
+ "lead": 0.12,
+ "pad": 0.15,
+ "music_vol": 0.2,
+ "sfx_vol": 0.4,
+ "voice_vol": 1.5,
+ "day_tag": "REALITY CHECK · DAY 6",
+ "theme": {
+  "BG": [
+   254,
+   250,
+   243
+  ],
+  "bg_delta": [
+   -10,
+   -18,
+   -31
+  ],
+  "WHITE": [
+   18,
+   30,
+   74
+  ],
+  "MUTED": [
+   112,
+   102,
+   84
+  ],
+  "GOLD": [
+   190,
+   138,
+   46
+  ],
+  "CARD": [
+   255,
+   255,
+   255
+  ],
+  "CARD2": [
+   232,
+   218,
+   188
+  ],
+  "DARK": [
+   18,
+   30,
+   74
+  ],
+  "BLUE": [
+   255,
+   236,
+   200
+  ],
+  "ORANGE": [
+   217,
+   89,
+   38
+  ],
+  "GREEN": [
+   13,
+   159,
+   110
+  ],
+  "RED": [
+   214,
+   60,
+   60
+  ],
+  "PW": [
+   255,
+   255,
+   255
+  ],
+  "SUB_HL": [
+   255,
+   214,
+   120
+  ],
+  "BRANDC": [
+   18,
+   30,
+   74
+  ],
+  "SLAB": [
+   226,
+   214,
+   194
+  ],
+  "SER3": [
+   [
+    42,
+    120,
+    214
+   ],
+   [
+    217,
+    89,
+    38
+   ],
+   [
+    13,
+    159,
+    110
+   ]
+  ]
+ },
+ "cover": {
+  "style": "s5",
+  "serif": true,
+  "face": "card",
+  "tag": "REALITY CHECK · EP 6",
+  "l1": "Crash Came,",
+  "l2": "Cash Ready?",
+  "mid": "THE EMERGENCY SHIELD",
+  "graphic": "steps",
+  "gtitle": "SAME ₹2.4L NEED",
+  "gvals": [
+   2.4,
+   3.58
+  ],
+  "glabs": [
+   "NORMAL",
+   "AFTER -33%"
+  ],
+  "gfmt": "₹{:.1f}L",
+  "gfoot": "UNITS SOLD · ILLUSTRATIVE",
+  "badge": "",
+  "va": "",
+  "vb": "",
+  "src": "Own calculation",
+  "hook": [
+   [
+    "",
+    [
+     [
+      "बाज़ार गिरा, job गई,",
+      false
+     ]
+    ]
+   ],
+   [
+    "",
+    [
+     [
+      "अब ",
+      false
+     ],
+     [
+      "cash",
+      true
+     ],
+     [
+      " कहाँ है?",
+      false
+     ]
+    ]
+   ]
+  ]
+ },
+ "scenes": [
+  {
+   "type": "isohook",
+   "line1": "Market down 33%?",
+   "line2": "Job gone too?",
+   "size1": 64,
+   "size2": 88,
+   "chips": [
+    "Market -33%",
+    "Job loss"
+   ],
+   "chip_t": [
+    0.42,
+    2.42
+   ],
+   "note": "चित्र सिर्फ़ उदाहरण के लिए · काल्पनिक",
+   "rev": [
+    0.0,
+    0.3153
+   ],
+   "subs": [
+    "बाज़ार *33%* गिरा, और उसी हफ़्ते आपकी *job* चली गई।",
+    "अब पैसे चाहिए, और आपका *एक ही सहारा* है, आपका *portfolio*।",
+    "*Think about it.*",
+    "यही है सबसे बड़ा *hidden risk*।"
+   ]
+  },
+  {
+   "type": "isocmp",
+   "badge": 31,
+   "badge_cap": "के पास fund + insurance दोनों हैं",
+   "col_name": "Finsafe India रिपोर्ट · 4,532 लोग",
+   "seg1": "दोनों हैं",
+   "seg2": "बाकी",
+   "chips_head": "Finsafe India रिपोर्ट",
+   "chips": [
+    [
+     "पिछले साल",
+     "26%"
+    ],
+    [
+     "इस साल",
+     "31%"
+    ],
+    [
+     "बाकी",
+     "~69%"
+    ]
+   ],
+   "note": "स्रोत: Finsafe India रिपोर्ट, Business Today (2 अगस्त 2026)",
+   "rev": [
+    0.0,
+    0.3649,
+    0.4154,
+    0.6805
+   ],
+   "subs": [
+    "और यह सिर्फ़ *कहानी* नहीं है।",
+    "*Finsafe India* की रिपोर्ट, जो *Business Today* में छपी, के मुताबिक़",
+    "सिर्फ़ *31%* working professionals के पास *emergency fund* और *insurance*, दोनों हैं।",
+    "पिछले साल यह *26%* था।",
+    "यानी करीब *7 में से 10* लोग अब भी आधे-अधूरे *protected* हैं।"
+   ]
+  },
+  {
+   "type": "isocmp",
+   "badge": 33,
+   "badge_cap": "13 trading sessions में गिरावट",
+   "col_name": "Sensex · मार्च 2020 का क्रैश",
+   "seg1": "गिरावट",
+   "seg2": "बचा",
+   "chips_head": "Sensex · कोविड क्रैश",
+   "chips": [
+    [
+     "23 मार्च 2020",
+     "25,981 बंद"
+    ],
+    [
+     "गिरावट",
+     "~33%"
+    ],
+    [
+     "वापसी",
+     "~8 महीने"
+    ]
+   ],
+   "note": "स्रोत: Business Standard · Business Today · इतिहास गारंटी नहीं",
+   "rev": [
+    0.0,
+    0.0991,
+    0.1346,
+    0.2637
+   ],
+   "subs": [
+    "अब एक *real example*। *मार्च 2020*।",
+    "*Sensex* सिर्फ़ *13 trading sessions* में करीब *33%* गिरा,",
+    "और *23 मार्च* को *25,981* पर बंद हुआ।",
+    "जिन्हें उस समय बेचना पड़ा, उन्होंने *bottom* के पास बेचा।",
+    "*Sensex* नवंबर 2020 तक, यानी करीब *आठ महीने* में, पुराने स्तर पर लौट आया।",
+    "*History is not a promise*, पर यह दिखाती है कि *timing* कितनी मायने रखती है।"
+   ]
+  },
+  {
+   "type": "isobars",
+   "title": "एक ही ज़रूरत: ₹2.4 लाख",
+   "sub": "बेचने पड़ने वाले units (pre-crash value) · काल्पनिक",
+   "step": 130,
+   "hl": [
+    1
+   ],
+   "fmt": "₹{:.1f}L",
+   "offs": [
+    0.0,
+    5.09
+   ],
+   "rows": [
+    [
+     "सामान्य समय",
+     2.4
+    ],
+    [
+     "33% गिरावट के बाद",
+     3.58
+    ]
+   ],
+   "gap": "49% ज़्यादा",
+   "gap_sub": "उतने ही पैसे के लिए ज़्यादा units बेचने पड़ते हैं",
+   "note": "ज़रूरत: ₹40,000 x 6 महीने · 2.4 / 0.67 = 3.58 · हमारी गणना",
+   "rev": [
+    0.03,
+    0.2284,
+    0.8683
+   ],
+   "subs": [
+    "अब *math* देखिए।",
+    "मान लीजिए आपको *₹2.4 लाख* चाहिए, यानी *₹40,000* के खर्च के *छह महीने*।",
+    "*Normal* समय में, आप *₹2.4 लाख* के units बेचते।",
+    "पर *33%* गिरावट में, उतने ही पैसे के लिए आपको करीब *49%* ज़्यादा units बेचने पड़ते।",
+    "*Same need*, ज़्यादा नुक़सान।"
+   ]
+  },
+  {
+   "type": "lesson",
+   "rows": [
+    {
+     "t": "3-6 months expenses",
+     "s": "COMMON RULE OF THUMB, NOT ADVICE"
+    },
+    {
+     "t": "Irregular income = more",
+     "s": "VARIABLE PAY OR ONE EARNER: MORE"
+    },
+    {
+     "t": "Safe + liquid",
+     "s": "SAVINGS A/C · FD · LIQUID FUND"
+    }
+   ],
+   "rev": [
+    0.0763,
+    0.364,
+    0.5607
+   ],
+   "subs": [
+    "तो *Shield* का *rule* क्या है?",
+    "बड़ा पैसा market में लगाने से पहले, ज़रूरी खर्चों के *तीन से छह महीने* अलग रखना एक आम *thumb rule* है।",
+    "अगर *आमदनी अनियमित* है, या घर में *एक ही कमाने वाला* है, तो और ज़्यादा।",
+    "इसे रखने की आम जगहें हैं, *savings account*, *FD* और *liquid fund*।",
+    "*Liquid fund* का return *guaranteed नहीं* होता, और redemption में आम तौर पर *T+1* लगता है।"
+   ]
+  },
+  {
+   "type": "poll",
+   "head": "आज का Poll",
+   "q": "कितने महीने का emergency fund?",
+   "opts": [
+    [
+     "A",
+     "ज़ीरो"
+    ],
+    [
+     "B",
+     "1 से 3 महीने"
+    ],
+    [
+     "C",
+     "4 महीने या ज़्यादा"
+    ]
+   ],
+   "ask": "Comment में A, B या C लिखिए",
+   "note": "सिर्फ़ जानने के लिए · कोई सलाह नहीं",
+   "rev": [
+    0.0,
+    0.4393,
+    0.5084,
+    0.8384
+   ],
+   "opt_rev": [
+    0.4393,
+    0.5084,
+    0.6542
+   ],
+   "subs": [
+    "आज का *poll*।",
+    "आपके पास अभी कितने महीने का *emergency fund* है?",
+    "*A*: ज़ीरो।",
+    "*B*: एक से तीन महीने।",
+    "*C*: चार महीने या ज़्यादा।",
+    "*Comment* में लिखिए।"
+   ]
+  },
+  {
+   "type": "outro",
+   "tag": "Reality Check · Hindi + English",
+   "cta": [
+    "SAVE",
+    "SEND",
+    "FOLLOW"
+   ],
+   "notice_hi": "हम SEBI registered नहीं हैं।",
+   "notice_en": "Educational purposes only · Not investment advice",
+   "tail": 0.8,
+   "rev": [
+    0.04,
+    0.5743
+   ],
+   "subs": [
+    "काम का लगा तो *Save* कीजिए।",
+    "ये video उस दोस्त को *Send* कीजिए, जो market में पैसा लगाता है, पर *emergency fund* नहीं रखता।",
+    "*Follow* कीजिए *TheSDTrader*।",
+    "हम *SEBI registered नहीं* हैं। यह जानकारी सिर्फ़ *educational* है, *investment advice नहीं*।"
+   ]
+  }
+ ]
+}
