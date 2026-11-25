@@ -1,0 +1,31 @@
+कोई बोले पैसा 3 साल में double? ज़रा रुकिए, पहले यह 10 सेकंड का 72 test कर लीजिए। 🧮
+Money doubling in 3 years? Run the Rule of 72 first.
+
+🧠 REALITY CHECK · DAY 7: The Rule of 72
+
+📐 Rule: 72 ÷ सालाना return = पैसा करीब कितने साल में double (अनुमान)
+• 6% → 12 साल
+• 8% → 9 साल
+• 12% → 6 साल
+(सिर्फ़ गणित के उदाहरण, return का वादा नहीं। Rule 6-10% पर सबसे सटीक है।)
+
+🚩 3 साल में double = 72 ÷ 3 = करीब 24% हर साल, बिना एक भी बुरे साल के (असली compound गणित में ~26%)। SEBI साफ़ कहता है कि securities market में assured returns की कोई guarantee नहीं हो सकती। Guarantee वाला वादा = red flag। किसी की registration SEBI की website पर check करें।
+
+📊 Inflation पर भी लागू (real data):
+• MoSPI: अक्टूबर 2026 में retail inflation 6.09% (provisional)। 72 ÷ 6.09 ≈ 12 साल। महँगाई यही रहे तो आज के ₹100 की ताक़त ~12 साल में करीब आधी (काल्पनिक)।
+• Business Today (अग. 2026): SBI की 1 साल की FD 6.25%। 72 ÷ 6.25 ≈ 11.5 साल। महँगाई से फ़र्क़ सिर्फ़ ~0.16 pt, tax से पहले। यानी नंबर double, पर खरीदने की ताक़त लगभग वहीं रह सकती है। (हमारी गणना, कोई सिफ़ारिश नहीं।)
+
+🗳️ आज का Poll: कोई 3 साल में double का वादा करे, तो आप क्या करेंगे?
+A) भरोसा करूँगा
+B) पहले SEBI पर check करूँगा
+C) Ignore करूँगा
+Comment में A, B या C लिखिए 👇
+
+💾 Save करें · 📤 उस दोस्त को Send करें जिसे कोई double money का वादा करता है · ➕ Follow @thesdtrader
+
+Sources: MoSPI CPI press release (Oct 2026); Business Today (SBI FD rates, Aug 2026); Business Standard (SEBI on assured returns).
+
+⚠️ हम SEBI registered नहीं हैं। यह content सिर्फ़ educational है।
+Disclaimer: This content is for educational and informational purposes only and does not constitute investment advice, a recommendation, or a buy/sell signal. Stock market investments are subject to market risks. Please do your own research before making any investment decisions.
+
+#TheSDTrader #RealityCheck #RuleOf72 #StockMarketIndia #Inflation #FixedDeposit #PersonalFinance #FinancialLiteracy #InvestingForBeginners #SEBI
