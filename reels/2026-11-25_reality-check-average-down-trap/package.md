@@ -39,6 +39,9 @@
 - **Yes Bank:** all-time high Rs 404 on 20 Aug 2018: **Business Standard** (Sep 2018 market reports and company page). Price Rs 17.63 on 13 Nov 2026 (Upstox, 10:30 IST). Fall: (404 - 17.63) / 404 = 95.6%, shown as "about 96%". Historical price example only; no cause or recommendation stated. The all-time-low figure differs by source (Rs 5.55 vs Rs 5.65), so it is **not used**.
 - **"Would you buy it again today at this price?" test:** widely used heuristic, also stated by Sahi; framed as a thinking framework, not advice.
 
+## Posting note
+- First dispatch failed before posting (caption was 2,358 characters; Instagram allows 2,200). Caption shortened to about 1,860 characters and re-dispatched; nothing was published by the failed run.
+
 ## Changes made to the pasted plan (compliance and accuracy)
 - Dropped "share 40% gir gaya... bohot jaldi bade nuksan mein daal sakta hai" as a blanket claim, and the "masterstroke" wording for averaging in market dips (no guarantee). The video states the maths both ways: averaging lowers the break-even price, but raises exposure and the rupee loss if the fall continues.
 - Dropped "framework in the caption, follow for tomorrow's reel" as the main follow trigger. Replaced with A/B/C poll plus SAVE/SEND/FOLLOW.
