@@ -1,0 +1,35 @@
+आपका fund manager market को beat कर रहा है? SPIVA data: 10 साल में करीब 4 में से 3 large-cap active funds अपने benchmark से पीछे रहे। 📉
+Fund manager vs Index: let's check the scoreboard.
+
+🥊 REALITY CHECK · DAY 10: Index Funds vs Active Funds
+
+📊 SPIVA India Mid-Year 2026 (S&P Dow Jones Indices), 30 जून 2026 तक, benchmark S&P India LargeMidCap से पीछे रहे large-cap active funds:
+• 1 साल: ~79%
+• 3 साल: 80%
+• 5 साल: ~85%
+• 10 साल: ~74%
+
+💸 Fees: SEBI के 2026 framework के बाद आम अनुमान: active equity fund का base expense ratio ~1.8%, index fund ~0.3-0.5% (index funds/ETFs की cap 0.90%)। Fee हर साल कटती है, return चाहे जो हो।
+
+🧮 Example (हमारी गणना, काल्पनिक): ₹10,000 SIP, 20 साल, fee से पहले 12% मान कर:
+• 1.8% fee → ~₹78.6 लाख
+• 0.3% fee → ~₹95.9 लाख
+सिर्फ़ fee का फ़र्क़ ~₹17 लाख (निवेश ₹24 लाख)। Return guaranteed नहीं।
+
+⚖️ Balance भी समझिए:
+• Index fund = market return, उससे ज़्यादा नहीं; गिरावट में वह भी गिरता है, और tracking error होता है।
+• कुछ active funds benchmark beat करते हैं, पर पहले से पहचानना मुश्किल।
+• कोई भी fund चुनने से पहले expense ratio और benchmark से तुलना देखें।
+
+🗳️ आज का Poll: portfolio में ज़्यादा क्या है?
+A) Active funds  B) Index funds  C) दोनों बराबर
+Comment में A, B या C लिखिए 👇
+
+💾 Save · 📤 उस दोस्त को Send करें जो सिर्फ़ star rating देखकर fund चुनता है · ➕ Follow @thesdtrader
+
+Sources: S&P Dow Jones Indices, SPIVA India Scorecard Mid-Year 2026; SEBI MF Regulations 2026 (via Upstox / INDmoney). Calculations are our own. No fund is recommended.
+
+⚠️ हम SEBI registered नहीं हैं। यह content सिर्फ़ educational है।
+Disclaimer: This content is for educational and informational purposes only and does not constitute investment advice, a recommendation, or a buy/sell signal. Mutual fund investments are subject to market risks, read all scheme related documents carefully. Please do your own research before making any investment decisions.
+
+#TheSDTrader #RealityCheck #IndexFunds #MutualFunds #SPIVA #ExpenseRatio #PersonalFinance #InvestingForBeginners #FinancialLiteracy

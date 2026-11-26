@@ -1,0 +1,417 @@
+{
+ "brand": "TheSDTrader",
+ "tagline": "Educational · शैक्षणिक जानकारी · Not advice",
+ "face": "assets/face_original.png",
+ "voice_tempo": 1.14,
+ "lead": 0.12,
+ "pad": 0.15,
+ "music_vol": 0.2,
+ "sfx_vol": 0.4,
+ "voice_vol": 1.5,
+ "day_tag": "REALITY CHECK · DAY 10",
+ "theme": {
+  "BG": [
+   254,
+   250,
+   243
+  ],
+  "bg_delta": [
+   -10,
+   -18,
+   -31
+  ],
+  "WHITE": [
+   18,
+   30,
+   74
+  ],
+  "MUTED": [
+   112,
+   102,
+   84
+  ],
+  "GOLD": [
+   190,
+   138,
+   46
+  ],
+  "CARD": [
+   255,
+   255,
+   255
+  ],
+  "CARD2": [
+   232,
+   218,
+   188
+  ],
+  "DARK": [
+   18,
+   30,
+   74
+  ],
+  "BLUE": [
+   255,
+   236,
+   200
+  ],
+  "ORANGE": [
+   217,
+   89,
+   38
+  ],
+  "GREEN": [
+   13,
+   159,
+   110
+  ],
+  "RED": [
+   214,
+   60,
+   60
+  ],
+  "PW": [
+   255,
+   255,
+   255
+  ],
+  "SUB_HL": [
+   255,
+   214,
+   120
+  ],
+  "BRANDC": [
+   18,
+   30,
+   74
+  ],
+  "SLAB": [
+   226,
+   214,
+   194
+  ],
+  "SER3": [
+   [
+    42,
+    120,
+    214
+   ],
+   [
+    217,
+    89,
+    38
+   ],
+   [
+    13,
+    159,
+    110
+   ]
+  ]
+ },
+ "cover": {
+  "style": "s5",
+  "serif": true,
+  "face": "card",
+  "tag": "REALITY CHECK · EP 10",
+  "l1": "Fund Manager",
+  "l2": "vs Index?",
+  "mid": "THE SCOREBOARD",
+  "graphic": "steps",
+  "gtitle": "₹10K SIP · 20 YRS",
+  "gvals": [
+   78.6,
+   95.9
+  ],
+  "glabs": [
+   "1.8% FEE",
+   "0.3% FEE"
+  ],
+  "gfmt": "₹{:.0f}L",
+  "gfoot": "12% PRE-FEE ASSUMED · ILLUSTRATIVE",
+  "badge": "",
+  "va": "",
+  "vb": "",
+  "src": "SPIVA India · own calc",
+  "hook": [
+   [
+    "",
+    [
+     [
+      "10 साल में ",
+      false
+     ],
+     [
+      "74%",
+      true
+     ],
+     [
+      " funds पीछे",
+      false
+     ]
+    ]
+   ],
+   [
+    "",
+    [
+     [
+      "Fees ",
+      false
+     ],
+     [
+      "हर साल",
+      true
+     ],
+     [
+      " कटती है",
+      false
+     ]
+    ]
+   ]
+  ]
+ },
+ "scenes": [
+  {
+   "type": "isohook",
+   "line1": "Fund manager vs Index?",
+   "line2": "3 out of 4 lost.",
+   "size1": 60,
+   "size2": 88,
+   "chips": [
+    "10 yrs: 74%",
+    "5 yrs: 85%"
+   ],
+   "chip_t": [
+    3.28,
+    5.28
+   ],
+   "note": "स्रोत: SPIVA India Mid-Year 2026 · large-cap funds",
+   "rev": [
+    0.0,
+    0.2228
+   ],
+   "subs": [
+    "आपका *fund manager*, market को *beat* कर रहा है?",
+    "*SPIVA* का data कहता है, *10 साल* में, *4 में से 3* large-cap funds अपने *benchmark* से पीछे रहे।",
+    "और *fees*? वो आप *हर साल* दे रहे हैं।",
+    "*Let's check the scoreboard.*"
+   ]
+  },
+  {
+   "type": "isobars",
+   "title": "Benchmark से पीछे large-cap funds",
+   "sub": "SPIVA India · 30 जून 2026 तक · vs S&P India LargeMidCap",
+   "step": 100,
+   "hl": [
+    3
+   ],
+   "fmt": "{:.0f}%",
+   "offs": [
+    0.0,
+    3.95,
+    5.06,
+    6.56
+   ],
+   "rows": [
+    [
+     "1 साल",
+     78.79
+    ],
+    [
+     "3 साल",
+     80.0
+    ],
+    [
+     "5 साल",
+     84.85
+    ],
+    [
+     "10 साल",
+     74.03
+    ]
+   ],
+   "gap": "10 साल: ~3 में से 4",
+   "gap_sub": "active large-cap funds पीछे",
+   "note": "स्रोत: S&P Dow Jones Indices, SPIVA India Scorecard Mid-Year 2026",
+   "rev": [
+    0.03,
+    0.3164,
+    0.7852
+   ],
+   "subs": [
+    "*S&P Dow Jones Indices* की *SPIVA India* report, *June 2026* तक का data।",
+    "Large-cap *active funds* में से, *1 साल* में करीब *79%*,",
+    "*3 साल* में *80%*,",
+    "*5 साल* में करीब *85%*,",
+    "और *10 साल* में करीब *74%* funds, अपने *benchmark* से पीछे रहे।"
+   ]
+  },
+  {
+   "type": "isobars",
+   "title": "सालाना fee (BER) · आम अनुमान",
+   "sub": "SEBI 2026 framework के बाद · fund के हिसाब से अलग",
+   "step": 130,
+   "hl": [
+    0
+   ],
+   "fmt": "{:.1f}%",
+   "offs": [
+    0.0,
+    6.04
+   ],
+   "rows": [
+    [
+     "Active equity fund",
+     1.8
+    ],
+    [
+     "Index fund",
+     0.3
+    ]
+   ],
+   "gap": "~6x फ़र्क़",
+   "gap_sub": "fee हर साल कटती है, return चाहे जो हो",
+   "note": "स्रोत: Upstox / INDmoney (SEBI MF Regulations 2026 पर) · index cap 0.90%",
+   "rev": [
+    0.03,
+    0.0427,
+    0.7392
+   ],
+   "subs": [
+    "अब *fees*।",
+    "*SEBI* के नए rules के बाद, *active equity fund* का *base expense ratio* आम तौर पर करीब *1.8%*,",
+    "और *index fund* का करीब *0.3 से 0.5%* माना जा रहा है।",
+    "यह fee *हर साल* कटती है, return अच्छा हो या बुरा।"
+   ]
+  },
+  {
+   "type": "isobars",
+   "title": "₹10,000 SIP · 20 साल · final value",
+   "sub": "fee से पहले 12% मान कर · काल्पनिक",
+   "step": 130,
+   "hl": [
+    1
+   ],
+   "fmt": "₹{:.1f}L",
+   "offs": [
+    0.0,
+    2.96
+   ],
+   "rows": [
+    [
+     "1.8% fee",
+     78.6
+    ],
+    [
+     "0.3% fee",
+     95.9
+    ]
+   ],
+   "gap": "~₹17 लाख फ़र्क़",
+   "gap_sub": "निवेश ₹24 लाख · सिर्फ़ fee का असर",
+   "note": "हमारी गणना · 10.2% vs 11.7% net · return guaranteed नहीं",
+   "rev": [
+    0.03,
+    0.3639,
+    0.6403
+   ],
+   "subs": [
+    "अब *math* देखिए।",
+    "*₹10,000* की SIP, *20 साल*, और मान लीजिए fees से पहले दोनों का return *12%*।",
+    "Fee *1.8%* पर, final amount करीब *₹78 लाख*।",
+    "और *0.3%* पर, करीब *₹96 लाख*।",
+    "सिर्फ़ fee का फ़र्क़, करीब *₹17 लाख*।",
+    "यह सिर्फ़ *example* है, return *guaranteed नहीं*।"
+   ]
+  },
+  {
+   "type": "lesson",
+   "rows": [
+    {
+     "t": "Index = market return",
+     "s": "NOT MORE · FALLS WITH MARKET"
+    },
+    {
+     "t": "कुछ active funds जीतते हैं",
+     "s": "HARD TO PICK IN ADVANCE"
+    },
+    {
+     "t": "Check: fee + benchmark",
+     "s": "COMPARE BEFORE YOU CHOOSE"
+    }
+   ],
+   "rev": [
+    0.0453,
+    0.3592,
+    0.6311
+   ],
+   "subs": [
+    "पर *ध्यान रहे*।",
+    "*Index fund* आपको *market का return* देता है, उससे ज़्यादा नहीं, और गिरावट में वह भी *गिरता* है।",
+    "कुछ *active funds* benchmark को *beat* भी करते हैं, बस *पहले से पहचानना* मुश्किल है।",
+    "तो कोई भी fund चुनने से पहले, उसका *expense ratio*, और पिछले सालों में *benchmark से तुलना*, ज़रूर देखिए।"
+   ]
+  },
+  {
+   "type": "poll",
+   "head": "आज का Poll",
+   "q": "Portfolio में ज़्यादा क्या है?",
+   "opts": [
+    [
+     "A",
+     "Active funds"
+    ],
+    [
+     "B",
+     "Index funds"
+    ],
+    [
+     "C",
+     "दोनों बराबर"
+    ]
+   ],
+   "ask": "Comment में A, B या C लिखिए",
+   "note": "सिर्फ़ जानने के लिए · कोई सलाह नहीं",
+   "rev": [
+    0.0,
+    0.4067,
+    0.5472,
+    0.8108
+   ],
+   "opt_rev": [
+    0.4067,
+    0.5472,
+    0.679
+   ],
+   "subs": [
+    "आज का *poll*।",
+    "आपके *portfolio* में ज़्यादा क्या है?",
+    "*A*: Active funds।",
+    "*B*: Index funds।",
+    "*C*: दोनों बराबर।",
+    "*Comment* में लिखिए।"
+   ]
+  },
+  {
+   "type": "outro",
+   "tag": "Reality Check · Hindi + English",
+   "cta": [
+    "SAVE",
+    "SEND",
+    "FOLLOW"
+   ],
+   "notice_hi": "हम SEBI registered नहीं हैं।",
+   "notice_en": "Educational purposes only · Not investment advice",
+   "tail": 0.8,
+   "rev": [
+    0.04,
+    0.5426
+   ],
+   "subs": [
+    "काम का लगा तो *Save* कीजिए।",
+    "यह video उस दोस्त को *Send* कीजिए, जो सिर्फ़ *star rating* देखकर fund चुनता है।",
+    "*Follow* कीजिए *TheSDTrader*।",
+    "हम *SEBI registered नहीं* हैं। यह जानकारी सिर्फ़ *educational* है, *investment advice नहीं*।"
+   ]
+  }
+ ]
+}
