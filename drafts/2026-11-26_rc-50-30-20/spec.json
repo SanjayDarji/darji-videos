@@ -1,0 +1,399 @@
+{
+ "brand": "TheSDTrader",
+ "tagline": "Educational · शैक्षणिक जानकारी · Not advice",
+ "face": "assets/face_original.png",
+ "voice_tempo": 1.14,
+ "lead": 0.12,
+ "pad": 0.15,
+ "music_vol": 0.2,
+ "sfx_vol": 0.4,
+ "voice_vol": 1.5,
+ "day_tag": "REALITY CHECK · DAY 9",
+ "theme": {
+  "BG": [
+   254,
+   250,
+   243
+  ],
+  "bg_delta": [
+   -10,
+   -18,
+   -31
+  ],
+  "WHITE": [
+   18,
+   30,
+   74
+  ],
+  "MUTED": [
+   112,
+   102,
+   84
+  ],
+  "GOLD": [
+   190,
+   138,
+   46
+  ],
+  "CARD": [
+   255,
+   255,
+   255
+  ],
+  "CARD2": [
+   232,
+   218,
+   188
+  ],
+  "DARK": [
+   18,
+   30,
+   74
+  ],
+  "BLUE": [
+   255,
+   236,
+   200
+  ],
+  "ORANGE": [
+   217,
+   89,
+   38
+  ],
+  "GREEN": [
+   13,
+   159,
+   110
+  ],
+  "RED": [
+   214,
+   60,
+   60
+  ],
+  "PW": [
+   255,
+   255,
+   255
+  ],
+  "SUB_HL": [
+   255,
+   214,
+   120
+  ],
+  "BRANDC": [
+   18,
+   30,
+   74
+  ],
+  "SLAB": [
+   226,
+   214,
+   194
+  ],
+  "SER3": [
+   [
+    42,
+    120,
+    214
+   ],
+   [
+    217,
+    89,
+    38
+   ],
+   [
+    13,
+    159,
+    110
+   ]
+  ]
+ },
+ "cover": {
+  "style": "s5",
+  "serif": true,
+  "face": "card",
+  "tag": "REALITY CHECK · EP 9",
+  "l1": "50-30-20?",
+  "l2": "Not on 40K.",
+  "mid": "THE BUDGET RULE",
+  "graphic": "steps",
+  "gtitle": "NEEDS ON ₹40K SALARY",
+  "gvals": [
+   20.0,
+   26.7
+  ],
+  "glabs": [
+   "RULE: 50%",
+   "REAL: ~67%"
+  ],
+  "gfmt": "₹{:.1f}K",
+  "gfoot": "ILLUSTRATIVE · NOT ADVICE",
+  "badge": "",
+  "va": "",
+  "vb": "",
+  "src": "Own calculation",
+  "hook": [
+   [
+    "",
+    [
+     [
+      "किराया ही ",
+      false
+     ],
+     [
+      "48%",
+      true
+     ],
+     [
+      " salary का?",
+      false
+     ]
+    ]
+   ],
+   [
+    "",
+    [
+     [
+      "Rule का ",
+      false
+     ],
+     [
+      "reality check",
+      true
+     ]
+    ]
+   ]
+  ]
+ },
+ "scenes": [
+  {
+   "type": "isohook",
+   "line1": "50-30-20 rule?",
+   "line2": "₹40K पर fail?",
+   "size1": 64,
+   "size2": 88,
+   "chips": [
+    "Rent ~48%",
+    "Needs ~67%"
+   ],
+   "chip_t": [
+    3.41,
+    6.15
+   ],
+   "note": "चित्र सिर्फ़ उदाहरण के लिए · काल्पनिक",
+   "rev": [
+    0.0,
+    0.2898
+   ],
+   "subs": [
+    "हर *finfluencer* बोलता है, *50-30-20 rule* follow करो।",
+    "पर *₹40,000* की salary, और *Bengaluru* में किराया?",
+    "यहाँ यह rule पहले ही महीने में *fail* हो सकता है।",
+    "*Let's do a reality check.*"
+   ]
+  },
+  {
+   "type": "lesson",
+   "rows": [
+    {
+     "t": "50% Needs",
+     "s": "RENT · RATION · BILLS"
+    },
+    {
+     "t": "30% Wants",
+     "s": "SHOPPING · OUTING"
+    },
+    {
+     "t": "20% Savings",
+     "s": "FIRST GOAL, NOT A LAW"
+    }
+   ],
+   "rev": [
+    0.0809,
+    0.3396,
+    0.5283
+   ],
+   "subs": [
+    "Rule *simple* है।",
+    "Salary का *50%* needs, यानी किराया, राशन और bills।",
+    "*30%* wants, यानी shopping और outing।",
+    "और *20%* savings।",
+    "*Template* अच्छा है, पर असली सवाल है, क्या यह आपके *शहर* में fit होता है?"
+   ]
+  },
+  {
+   "type": "isobars",
+   "title": "1BHK औसत मासिक किराया",
+   "sub": "CREDAI-MCHI report · salary ₹40,000 से तुलना",
+   "step": 108,
+   "hl": [
+    2
+   ],
+   "fmt": "₹{:,.0f}",
+   "offs": [
+    0.0,
+    1.4,
+    3.74
+   ],
+   "rows": [
+    [
+     "Bengaluru",
+     19228
+    ],
+    [
+     "Delhi-NCR",
+     19058
+    ],
+    [
+     "Mumbai",
+     43138
+    ]
+   ],
+   "gap": "Mumbai > ₹40K salary",
+   "gap_sub": "Q1 2026: बड़े शहरों में किराए ~14% ऊपर",
+   "note": "स्रोत: CREDAI-MCHI (Free Press Journal) · Outlook Money (Q1 2026)",
+   "rev": [
+    0.03,
+    0.2258,
+    0.4913
+   ],
+   "subs": [
+    "अब *real data* देखिए।",
+    "*CREDAI-MCHI* की report के मुताबिक़ *1BHK* का औसत किराया,",
+    "*Bengaluru* में करीब *₹19,000*, *Delhi-NCR* में भी करीब *₹19,000*,",
+    "और *Mumbai* में करीब *₹43,000*।",
+    "यानी Mumbai में *अकेला किराया* ही ₹40,000 की salary से ज़्यादा।",
+    "और एक report के मुताबिक़, इस साल की पहली तिमाही में बड़े शहरों में किराए साल भर में करीब *14%* बढ़े।"
+   ]
+  },
+  {
+   "type": "isobars",
+   "title": "₹40,000 salary पर needs",
+   "sub": "Bengaluru 1BHK + कम से कम खर्च · काल्पनिक",
+   "step": 130,
+   "hl": [
+    1
+   ],
+   "fmt": "₹{:,.0f}",
+   "offs": [
+    0.0,
+    8.91
+   ],
+   "rows": [
+    [
+     "Rule: 50%",
+     20000
+    ],
+    [
+     "असली: ~67%",
+     26728
+    ]
+   ],
+   "gap": "सिर्फ़ 33% बचा",
+   "gap_sub": "wants + savings दोनों के लिए",
+   "note": "किराया ₹19,228 + राशन ₹4,000 + travel ₹1,500 + bills ₹2,000 · हमारी गणना",
+   "rev": [
+    0.03,
+    0.1298,
+    0.8127
+   ],
+   "subs": [
+    "अब *₹40,000* की salary पर *math*।",
+    "Rule कहता है, needs पर *₹20,000*।",
+    "पर Bengaluru में 1BHK करीब *₹19,000*, ऊपर से राशन, travel और bills का कम से कम *₹7,500*।",
+    "Total करीब *₹26,700*, यानी salary का *67%*।",
+    "Wants और savings के लिए बचे सिर्फ़ *33%*।"
+   ]
+  },
+  {
+   "type": "lesson",
+   "rows": [
+    {
+     "t": "Pay yourself first",
+     "s": "SAVE ON SALARY DAY · EVEN 10%"
+    },
+    {
+     "t": "Rent = biggest lever",
+     "s": "FLAT SHARE · SMART LOCATION"
+    },
+    {
+     "t": "Raise = savings ↑",
+     "s": "AVOID LIFESTYLE CREEP"
+    }
+   ],
+   "rev": [
+    0.1455,
+    0.4145,
+    0.6973
+   ],
+   "subs": [
+    "तो rule छोड़ें? *नहीं*, उसे *smart* तरीके से adjust करें।",
+    "पहला, *pay yourself first*। Salary आते ही, जितना हो सके, पहले बचत अलग कीजिए, चाहे *10%* से ही शुरू हो।",
+    "दूसरा, सबसे बड़ा खर्च *किराया* है, तो *flat share* करना या office के थोड़ा दूर रहना, यह सबसे बड़ा *lever* है।",
+    "तीसरा, जब salary बढ़े, तो *lifestyle* नहीं, *savings* का percent बढ़ाइए। इसे कहते हैं *lifestyle creep* से बचना।"
+   ]
+  },
+  {
+   "type": "poll",
+   "head": "आज का Poll",
+   "q": "Salary का कितना % बचता है?",
+   "opts": [
+    [
+     "A",
+     "10% से कम"
+    ],
+    [
+     "B",
+     "10 से 20%"
+    ],
+    [
+     "C",
+     "20% से ज़्यादा"
+    ]
+   ],
+   "ask": "Comment में A, B या C लिखिए",
+   "note": "सिर्फ़ जानने के लिए · कोई सलाह नहीं",
+   "rev": [
+    0.0,
+    0.4642,
+    0.5715,
+    0.8273
+   ],
+   "opt_rev": [
+    0.4642,
+    0.5715,
+    0.6788
+   ],
+   "subs": [
+    "आज का *poll*।",
+    "आप अपनी salary का कितना percent *बचा* पाते हैं?",
+    "*A*: 10% से कम।",
+    "*B*: 10 से 20%।",
+    "*C*: 20% से ज़्यादा।",
+    "*Comment* में लिखिए।"
+   ]
+  },
+  {
+   "type": "outro",
+   "tag": "Reality Check · Hindi + English",
+   "cta": [
+    "SAVE",
+    "SEND",
+    "FOLLOW"
+   ],
+   "notice_hi": "हम SEBI registered नहीं हैं।",
+   "notice_en": "Educational purposes only · Not financial advice",
+   "tail": 0.8,
+   "rev": [
+    0.04,
+    0.5624
+   ],
+   "subs": [
+    "काम का लगा तो *Save* कीजिए।",
+    "यह video उस दोस्त को *Send* कीजिए, जिसकी salary *महीने के बीच* में ही ख़त्म हो जाती है।",
+    "*Follow* कीजिए *TheSDTrader*।",
+    "हम *SEBI registered नहीं* हैं। यह जानकारी सिर्फ़ *educational* है, *financial advice नहीं*।"
+   ]
+  }
+ ]
+}
